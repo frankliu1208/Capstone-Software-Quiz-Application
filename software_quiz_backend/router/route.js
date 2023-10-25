@@ -3,7 +3,6 @@ import * as controller from '../controllers/controller.js'
 
 const router = Router();
 
-// router.get('/questions', controller.getQuestions)
 
 router.route('/questions')
     .get(controller.getQuestions)
@@ -11,7 +10,7 @@ router.route('/questions')
     .delete(controller.dropQuestions)
 
 router.route('/result')
-    .get(controller.getResult)
+    .get(controller.getResult)   // When a GET request is made to the "/result" endpoint, the getResult function from the controller module will be called to handle the request.
     .post(controller.storeResult)
     .delete(controller.dropResult)
 

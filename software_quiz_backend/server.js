@@ -10,7 +10,7 @@ app.use(cors());
 app.use(express.json());
 config()
 const port = process.env.PORT || 3000
-app.use('/api', router)
+app.use('/api', router) //  any request that starts with "/api" will be handled by the router
 
 connect()
 
