@@ -14,13 +14,13 @@ app.use('/api', router) //  any request that starts with "/api" will be handled 
 
 connect()
 
-app.get('/', (req, res)=>{
-    try {
-        res.json("Get requests")
-    } catch (error) {
-        res.json(error)
-    }
-})
+// app.get('/', (req, res)=>{
+//     try {
+//         res.json("Get requests")
+//     } catch (error) {
+//         res.json(error)
+//     }
+// })
 
 app.listen(port, () => {
     console.log(`Server is running on port: ${port}`);

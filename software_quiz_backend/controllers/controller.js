@@ -11,11 +11,12 @@ export async function getQuestions(req, res){
     }
 }
 
+
 /** insert all questinos */
 export async function insertQuestions(req, res){
     try {
-        Questions.insertMany({ questions, answers }, function(err, data){
-            res.json({ msg: "Data Saved Successfully...!"})
+        await Questions.insertMany({questions: questions, answers: answers}).then(function (err, data) {
+            res.json({msg: "Data Saved Successfully...!"})
         })
     } catch (error) {
         res.json({ error })
