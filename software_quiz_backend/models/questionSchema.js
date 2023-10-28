@@ -1,11 +1,15 @@
 import mongoose from "mongoose";
 const { Schema } = mongoose;
 
-/** question model */
+
 const questionModel = new Schema({
-    questions: { type : Array, default: []}, // create question with [] default value
-    answers : { type : Array, default: []},
-    createdAt: { type: Date, default: Date.now() },
+    quizId: { type: String},
+    questionId: { type : String},
+    questionContent: { type : String},
+    type: { type : String},
+    answersItem : { type : Array, default: []},  // what should be the type?
+    userAnswer: { type : String},    // what should be the type?
+    correctAnser: { type: String },    // what should be the type?
 });
 
-export default mongoose.model('Question', questionModel);
+export default mongoose.model('question', questionModel);
