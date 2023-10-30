@@ -11,4 +11,4 @@ const userModel = new Schema({
     userPassword : { type : String, required:true}
 })
 
-export default mongoose.model('user', userModel);  // result is the name of the collection in MongoDB database
+export default mongoose.model('user', userModel);  // user is the name of the collection in MongoDB database

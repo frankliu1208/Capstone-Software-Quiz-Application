@@ -5,7 +5,7 @@ const { Schema } = mongoose;
 
 /** below define the rules  */
 const resultModel = new Schema({
-    userId : { type : String },
+    // userId : { type : String },
     userName : { type : String},
     userEmail : { type : String},
     testDate : { type : Date},
