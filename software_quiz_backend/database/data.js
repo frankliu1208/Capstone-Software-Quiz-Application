@@ -1,3 +1,9 @@
+
+//  The purpose of this file is to initially add some data into MongoDB database
+//  in the future, below structure will be updated according to our detailed business logic
+//  When the frontend is ready(which means in the future, the data add/update/delete will be triggered at the frontend),
+//  this file can be deleted
+
 export default [
     {
         id: 1,

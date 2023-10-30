@@ -3,7 +3,7 @@ const { Schema } = mongoose;
 
 
 const questionModel = new Schema({
-    quizId: { type: String},
+    // quizId: { type: String},
     questionId: { type : String},
     questionContent: { type : String},
     type: { type : String},
@@ -12,4 +12,4 @@ const questionModel = new Schema({
     correctAnser: { type: String },    // what should be the type?
 });
 
-export default mongoose.model('question', questionModel);
+export default mongoose.model('question', questionModel);  // question is the name of the collection in MongoDB database
