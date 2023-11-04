@@ -9,7 +9,7 @@ import data from "../database/data.js";
 
 const router = Router();
 
-// This line specifies a base URL path of "/questions" for the routes defined within this router.
+// below specifies a base URL path of "/questions" for the routes defined within this router.
 // All routes chained after this line will be relative to "/questions."
 router.route('/questions')
     .get(controller.getQuestions)  // when a "GET" request is made to "/questions," the getQuestions function from the controller module will handle it.
