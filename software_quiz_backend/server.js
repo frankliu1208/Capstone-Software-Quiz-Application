@@ -12,8 +12,18 @@ app.use(cookieParser());
 //origin will be access the application can be the applications url
 app.use(cors({
     credentials:true,
-    origin:['*']
+    origin:['http://localhost:4200']
 }));
+
+
+//----------------------------------cors workaround that also works
+// Enable CORS for all routes
+// app.use((req, res, next) => {
+//     res.setHeader('Access-Control-Allow-Origin', '*');
+//     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+//     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+//     next();
+//   });
 
 app.use(express.json());
 config()
@@ -23,13 +33,6 @@ app.use('/api', router) //  any request that starts with "/api" will be handled 
 
 connect()
 
-// app.get('/', (req, res)=>{
-//     try {
-//         res.json("Get requests")
-//     } catch (error) {
-//         res.json(error)
-//     }
-// })
 
 app.listen(port, () => {
     console.log(`Server is running on port: ${port}`);
