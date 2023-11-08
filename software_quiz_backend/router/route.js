@@ -9,20 +9,21 @@ import data from "../database/data.js";
 
 const router = Router();
 
-// below specifies a base URL path of "/questions" for the routes defined within this router.
-// All routes chained after this line will be relative to "/questions."
-router.route('/questions')
-    .get(controller.getQuestions)  // when a "GET" request is made to "/questions," the getQuestions function from the controller module will handle it.
-    .post(controller.insertQuestions)
-    .delete(controller.dropQuestions)
 
-router.route('/result')
-    .get(controller.getResult)   // When a GET request is made to the "/result" endpoint, the getResult function from the controller module will be called to handle the request.
-    .post(controller.storeResult)
-    .delete(controller.dropResult)
+// After successfully logged-in,  come to this main page.
+// TODO: 1. user cannot directly come to this main page by entering the URL "/main";
+//  2. in the future, employer and candidates shall have different main page
+router.get('/main', (req, res) => {
+    console.log("redirected to the main page")
+    // res.render('main');
+    res.send({
+        message: "Main Page"
+    })
+});
 
 
-//handles registration of a new user
+
+//new user register functionality:  after the sucessful verification, store the user info into user collection
 router.post('/register', async (req, res) => {
     let userName = req.body.userName;
     let userEmail = req.body.userEmail;
@@ -39,9 +40,7 @@ router.post('/register', async (req, res) => {
         return res.status(400).send({
             message: "Email is already in use. Please try again with a different email"
         })
-    }
-
-    else {
+    } else {
         const user = new User({
             userName: userName,
             userEmail: userEmail,
@@ -66,7 +65,9 @@ router.post('/register', async (req, res) => {
     }
 })
 
-//login to a users profile
+
+
+//login functionality, after sucessfully login, it will redirect to the main page
 router.post('/login', async (req, res) => {
     const user = await User.findOne({userEmail:req.body.userEmail})
 
@@ -92,10 +93,17 @@ router.post('/login', async (req, res) => {
 
     })
 
-    res.send({
-        message: "success"
-    })
+    // Attention:  res.send() and res.redirect() can not be used at the same time, if uncomment below res.send(),  redirect() does not work
+    // res.send({
+    //     message: "Login success"
+    // })
+    console.log("login successful")
+    //  as we have defined the unified prefix "/api", so when do redirecting, don't forget to add "/api"
+    res.redirect('/api/main')
+
 })
+
+
 
 
 // returns all the data of the currently logged in user
@@ -125,6 +133,8 @@ router.get('/user', async (req, res) => {
 
     }
 })
+
+
 
 
 
