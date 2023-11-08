@@ -61,7 +61,7 @@ router.post('/register', async (req, res) => {
 
         res.send({
             user: result,
-            message: "Success"
+            message: "Account Created Succesfully"
         })
     }
 })
