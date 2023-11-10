@@ -20,12 +20,16 @@ router.get('/main', (req, res) => {
 })
 
 
-// User management page
-router.get('/user_management_page', (req, res) =>{
+// User management page, TODO: get all users' information from the database
+router.get('/user_management_page', async (req, res) =>{
     console.log("Now you are redirected to the main page")
-    res.send({
-        message: "This is User Management Page"
-    })
+    try {
+        const allUserInfo = await User.find({}).lean().exec()
+        res.status(200).json(allUserInfo)
+    } catch (error) {
+        console.log(error)
+    }
+
 })
 
 
@@ -100,7 +104,7 @@ router.post('/login', async (req, res) => {
 
 
 
-// returns  user information concerning the currently logged in user (only return 1 user,  not all users)
+// returns user information concerning the currently logged in user (only return 1 user,  not all users)
 router.get('/user', async (req, res) => {
     try {
         //get the users cookie from browser if present
@@ -123,6 +127,26 @@ router.get('/user', async (req, res) => {
 })
 
 
+
+// return the single user info according to the user _id
+// this function is used when the employer wants to edit the info of a specific user in the User Management Page.
+// when employer clicks the "edit" button in the users table, frontend shall send request to this endpoint with user _id
+// then this function will return that specific user info to the frontend, this info can be disployed in the edit-user-modal which is popped out after clicking "edit-user" button
+// Then employer can enter renewed user info and then click "submit" button, then it will go to '/update_user' endpoint and trigger that route handling function
+router.post('/find_single_user', async (req, res) => {
+    try {
+        const user = await User.findOne({ _id: req.body._id });
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        const { userPassword, ...data } = await user.toJSON();
+        res.send(data);
+    } catch (err) {
+        return res.status(401).send({
+            message: "Unauthenticated"
+        })
+    }
+})
 
 
 
@@ -165,6 +189,36 @@ router.post('/add_new_user',  async (req,res)=> {
 
 } )
 
+
+
+// Update the user info, this is related to User Management Section
+router.put('/update_user', async (req, res) => {
+
+    let userPassword = req.body.userPassword
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(userPassword, salt);
+
+    User.findByIdAndUpdate(req.body._id,
+        {
+            $set : {
+                userName: req.body.userName,
+                userEmail: req.body.userEmail,
+                userPassword: hashedPassword
+            }
+        }).then(data =>{
+            if(!data){
+                res.status(404).send({
+                    message: "cannot update the user information"
+                })
+            }else {
+                res.status(200).send(data);
+            }
+    }).catch(err => {
+        res.status(500).send({
+            message: "Error updating the user information"
+        })
+    })
+})
 
 
 
