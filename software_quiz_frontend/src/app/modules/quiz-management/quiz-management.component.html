@@ -1,0 +1,22 @@
+
+<button [routerLink]="['/landing']" mat-button>Create Quiz</button>
+<table>
+    <thead>
+      <tr>
+        <th>View</th>
+        <th>Quiz Name</th>
+        <th>Time</th>
+        <th># of Questions</th>
+        <th>Create Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of data">
+        <td>ICON HERE</td>
+        <td>{{ item.quizName }}</td>
+        <td>{{ item.time }}</td>
+        <td>{{ item.questions }}</td>
+        <td>{{ item.createDate }}</td>
+      </tr>
+    </tbody>
+  </table>

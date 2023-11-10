@@ -15,6 +15,7 @@ import { MatCardModule } from '@angular/material/card';
 import { HeaderComponent } from './core/header/header.component';
 import { AdminLandingComponent } from './modules/admin-landing/admin-landing.component';
 import { QuizComponent } from './modules/quiz/quiz.component';
+import { QuizManagementComponent } from './modules/quiz-management/quiz-management.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { QuizComponent } from './modules/quiz/quiz.component';
     AdminLoginComponent,
     HeaderComponent,
     AdminLandingComponent,
-    QuizComponent
+    QuizComponent,
+    QuizManagementComponent
   ],
   imports: [
     BrowserModule,

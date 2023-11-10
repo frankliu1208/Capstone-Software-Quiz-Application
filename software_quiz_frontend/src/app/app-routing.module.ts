@@ -5,6 +5,7 @@ import { HomeComponent } from './modules/home/home.component';
 import { RegisterComponent } from './register/register.component';
 import { AdminLoginComponent } from './modules/admin-login/admin-login.component';
 import { AdminLandingComponent } from './modules/admin-landing/admin-landing.component';
+import { QuizManagementComponent } from './modules/quiz-management/quiz-management.component';
 
 const routes: Routes = [
 
@@ -23,6 +24,10 @@ const routes: Routes = [
   {
     path: 'landing',
     component: AdminLandingComponent
+  },
+  {
+    path: 'quiz-management',
+    component: QuizManagementComponent
   },
 ];
 
