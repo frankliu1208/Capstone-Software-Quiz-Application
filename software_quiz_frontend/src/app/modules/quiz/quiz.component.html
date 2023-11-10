@@ -1,0 +1,50 @@
+<div>
+    <h2>Create a Quiz</h2>
+    <form (submit)="addQuestion()">
+      <label for="questionType">Question Type:</label>
+      <select id="questionType" [(ngModel)]="newQuestion.type">
+        <option [value]="questionTypes.MultipleChoice">Multiple Choice</option>
+        <option [value]="questionTypes.TrueFalse">True/False</option>
+        <option [value]="questionTypes.MultipleAnswers">Multiple Answers</option>
+        <option [value]="questionTypes.FreeText">Free Text</option>
+      </select>
+      <label for="questionText">Question Text:</label>
+      <input type="text" id="questionText" [(ngModel)]="newQuestion.text" required>
+      <div *ngIf="newQuestion.type === questionTypes.MultipleChoice">
+        <label for="options">Options:</label>
+        <input *ngFor="let option of newQuestion.options; let i = index" type="text" id="options" [(ngModel)]="newQuestion.options[i]" required>
+        <label for="correctAnswers">Correct Answer(s):</label>
+        <input type="number" id="correctAnswers" [(ngModel)]="newQuestion.correctAnswers[0]" required>
+      </div>
+      <div *ngIf="newQuestion.type === questionTypes.TrueFalse">
+        <label for="trueFalse">True or False:</label>
+        <select id="trueFalse" [(ngModel)]="newQuestion.correctAnswers[0]">
+          <option [value]="0">False</option>
+          <option [value]="1">True</option>
+        </select>
+      </div>
+      <div *ngIf="newQuestion.type === questionTypes.MultipleAnswers">
+        <label for="options">Options:</label>
+        <input *ngFor="let option of newQuestion.options; let i = index" type="text" id="options" [(ngModel)]="newQuestion.options[i]" required>
+        <label for="correctAnswers">Correct Answer(s):</label>
+        <div *ngFor="let i of newQuestion.options; let j = index">
+          <input type="checkbox" id="correctAnswers{{j}}" [(ngModel)]="newQuestion.correctAnswers[j]" value="{{j}}">
+          {{ i }}
+        </div>
+      </div>
+      <div *ngIf="newQuestion.type === questionTypes.FreeText">
+        <label for="correctAnswers">Correct Answer:</label>
+        <input type="text" id="correctAnswers" [(ngModel)]="newQuestion.correctAnswers[0]" required>
+      </div>
+      <button type="submit">Add Question</button>
+    </form>
+    <h3>Questions</h3>
+    <ul>
+      <li *ngFor="let question of questions">
+        <p>{{ question.text }}</p>
+        <p>Type: {{ question.type }}</p>
+        <p>Options: {{ question.options.join(', ') }}</p>
+        <p>Correct Answer(s): {{ question.correctAnswers.join(', ') }}</p>
+      </li>
+    </ul>
+  </div>
