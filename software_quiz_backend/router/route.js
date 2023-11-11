@@ -221,6 +221,28 @@ router.put('/update_user', async (req, res) => {
 })
 
 
+router.post('/delete_user', async (req, res) => {
+
+    const id = req.body._id;
+
+    User.findByIdAndRemove(id)
+        .then(data => {
+            if (!data) {
+                res.status(404).send({
+                    message: `Cannot delete user with id=${id}!`
+                });
+            } else {
+                res.send({
+                    message: "The user was deleted successfully!"
+                });
+            }
+        })
+        .catch(err => {
+            res.status(500).send({
+                message: "Errors, could not delete User with id=" + id
+            });
+        });
+})
 
 
 export default router;
