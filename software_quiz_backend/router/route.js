@@ -8,9 +8,8 @@ const router = Router();
 
 
 
-// After successfully logged-in,  come to this main page.
+// After successfully logged-in,  suer will come to the application Main page.
 // TODO: 1. user cannot directly come to this main page by entering the URL "/main";
-//  2. in the future, employer and candidates shall have different main page
 router.get('/main', (req, res) => {
     console.log("redirected to the main page")
     // res.render('main');
@@ -20,7 +19,8 @@ router.get('/main', (req, res) => {
 })
 
 
-// User management page, TODO: get all users' information from the database
+// User management section home page, the employer can get all users' information from the database, these info will be displayed
+// as users list in user management section home page
 router.get('/user_management_page', async (req, res) =>{
     console.log("Now you are redirected to the main page")
     try {
@@ -34,7 +34,7 @@ router.get('/user_management_page', async (req, res) =>{
 
 
 
-//new user register functionality:  after the sucessful verification, store the user info into user collection
+//new user register functionality:  after  successful verification, store the user info into database "user" collection
 router.post('/register', async (req, res) => {
     let userName = req.body.userName;
     let userEmail = req.body.userEmail;
@@ -71,7 +71,7 @@ router.post('/register', async (req, res) => {
 
 
 
-//login functionality, after sucessfully login, it will redirect to the main page
+//login functionality, after successfully login, it will redirect to the application Main page
 router.post('/login', async (req, res) => {
     const user = await User.findOne({userEmail:req.body.userEmail})
     //user email not found
@@ -104,7 +104,7 @@ router.post('/login', async (req, res) => {
 
 
 
-// returns user information concerning the currently logged in user (only return 1 user,  not all users)
+// Display of current logged-in-user info (only return 1 user,  not all users)
 router.get('/user', async (req, res) => {
     try {
         //get the users cookie from browser if present
@@ -128,7 +128,7 @@ router.get('/user', async (req, res) => {
 
 
 
-// return the single user info according to the user _id
+// find out the single user info according to the user _id, this functionality relates to User management section
 // this function is used when the employer wants to edit the info of a specific user in the User Management Page.
 // when employer clicks the "edit" button in the users table, frontend shall send request to this endpoint with user _id
 // then this function will return that specific user info to the frontend, this info can be disployed in the edit-user-modal which is popped out after clicking "edit-user" button
@@ -150,7 +150,7 @@ router.post('/find_single_user', async (req, res) => {
 
 
 
-// add new user by the employer in User Management Section
+// Add new user by  employer,  this functionality relates to User management section
 // please remember:  change the psd into hash format;  verify that user is not existed in database
 router.post('/add_new_user',  async (req,res)=> {
     if(!req.body){
@@ -191,7 +191,7 @@ router.post('/add_new_user',  async (req,res)=> {
 
 
 
-// Update the user info, this is related to User Management Section
+// Update the user info, this functionality relates to User management section
 router.put('/update_user', async (req, res) => {
 
     let userPassword = req.body.userPassword
@@ -220,7 +220,7 @@ router.put('/update_user', async (req, res) => {
     })
 })
 
-
+// Delete the user info according to that user's _id,  this functionality relates to User management section
 router.post('/delete_user', async (req, res) => {
 
     const id = req.body._id;
