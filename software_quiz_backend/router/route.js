@@ -2,6 +2,8 @@ import { Router } from "express";
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../models/userSchema.js';
+import Quiz from '../models/quizSchema.js';
+import Question from '../models/questionSchema.js';
 import data from "../database/data.js";
 
 const router = Router();
@@ -31,7 +33,6 @@ router.get('/user_management_page', async (req, res) =>{
     }
 
 })
-
 
 
 //new user register functionality:  after  successful verification, store the user info into database "user" collection
@@ -70,7 +71,6 @@ router.post('/register', async (req, res) => {
 })
 
 
-
 //login functionality, after successfully login, it will redirect to the application Main page
 router.post('/login', async (req, res) => {
     const user = await User.findOne({userEmail:req.body.userEmail})
@@ -102,8 +102,6 @@ router.post('/login', async (req, res) => {
 })
 
 
-
-
 // Display of current logged-in-user info (only return 1 user,  not all users)
 router.get('/user', async (req, res) => {
     try {
@@ -127,7 +125,6 @@ router.get('/user', async (req, res) => {
 })
 
 
-
 // find out the single user info according to the user _id, this functionality relates to User management section
 // this function is used when the employer wants to edit the info of a specific user in the User Management Page.
 // when employer clicks the "edit" button in the users table, frontend shall send request to this endpoint with user _id
@@ -147,7 +144,6 @@ router.post('/find_single_user', async (req, res) => {
         })
     }
 })
-
 
 
 // Add new user by  employer,  this functionality relates to User management section
@@ -185,10 +181,7 @@ router.post('/add_new_user',  async (req,res)=> {
                 });
             });
     }
-
-
 } )
-
 
 
 // Update the user info, this functionality relates to User management section
@@ -220,6 +213,7 @@ router.put('/update_user', async (req, res) => {
     })
 })
 
+
 // Delete the user info according to that user's _id,  this functionality relates to User management section
 router.post('/delete_user', async (req, res) => {
 
@@ -243,6 +237,102 @@ router.post('/delete_user', async (req, res) => {
             });
         });
 })
+
+
+// Quiz management section home page, the employer can get all quiz's basic information from the database, these info will be displayed
+// as a list in quiz management section home page
+router.get('/quiz_management_page', async (req, res) =>{
+    console.log("Now you are at quiz management section home page")
+    try {
+        const allQuizInfo = await Quiz.find({}).lean().exec()
+        res.status(200).json(allQuizInfo)
+    } catch (error) {
+        console.log(error)
+    }
+})
+
+
+// in quiz management section home page, user can click "create" button to open a modal (the modal is used to let user enter quiz basic information),
+// then below route function is triggered to display the already-created-questions list (question that belongs to this quiz) in the modal
+router.get('/open_create_quiz_modal', async (req, res) =>{
+    console.log("Now you have opened create-quiz-modal, questions list will be displayed")
+    try {
+        const allQuestionInfo = await Question.find({}).lean().exec()  //TODO: find questions only relate to this quiz
+        res.status(200).json(allQuestionInfo)
+    } catch (error) {
+        console.log(error)
+    }
+})
+
+
+// after clicking the "create" button in quiz managemnet section home page, a modal is popped to let user enter quiz basic information
+// then user clicks "save quiz" button, it will trigger below route function to save quiz basic info into database "quiz" collection
+router.post('/create_new_quiz',  async (req,res)=> {
+    if(!req.body){
+        res.status(400).send({ message : "Create new quiz functionality: Content in request body is empty!"})
+    }
+
+    let quizName = req.body.quizName
+    let quizTime = req.body.quizTime
+    let questionNumber = req.body.questionNumber
+    let createTime = Date.now()
+
+    const quiz = new Quiz({
+        quizName: quizName,
+        quizTime: quizTime,
+        questionNumber: questionNumber,
+        createTime: createTime,
+    })
+
+    quiz.save(quiz)
+        .then(data => {
+            res.redirect('/api/quiz_management_page')
+        })
+        .catch(err =>{
+            res.status(500).send({
+                message : err.message || "Error happened during creating quiz process"
+            });
+        });
+} )
+
+
+// in the create-quiz-modal, the user can click "add question" button to open "add question modal", then user can enter question content, answer items, correct answer etc
+// in the modal,  after clicking "submit" button,  the below function will be triggered.
+router.post('/add_questions',  async (req,res)=> {
+    if(!req.body){
+        res.status(400).send({ message : "Add new question functionality: Content in request body is empty!"})
+    }
+    let quizId       // TODO: how to get quizId
+    let questionContent = req.body.questionContent
+    let type = req.body.type    // 4 different types: single choice, multiple choice, T/F, free form
+    let answersItem = req.body.answersItem
+    let correctAnswer = req.body.correctAnswer
+
+    const question = new Question({
+        quizId: quizId,
+        questionContent: questionContent,
+        type: type,
+        answersItem: answersItem,
+        correctAnswer: correctAnswer,
+    })
+
+    question.save(question)
+        .then(data => {
+            res.redirect('/api/open_create_quiz_modal')
+        })
+        .catch(err =>{
+            res.status(500).send({
+                message : err.message || "Error happened during adding questions process"
+            });
+        });
+} )
+
+
+
+
+
+
+
 
 
 export default router;
