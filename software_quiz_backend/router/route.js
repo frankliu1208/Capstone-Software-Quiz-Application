@@ -185,18 +185,20 @@ router.post('/add_new_user',  async (req,res)=> {
 
 
 // Update the user info, this functionality relates to User management section
-router.put('/update_user', async (req, res) => {
+// dynamic url:  "/:id" aims to tell the below function which user needs to be updated.  Updated contents from the user input at the frontend
+// will be transfered to below function through req.body
+router.put('/update_user/:id', async (req, res) => {
 
     let userPassword = req.body.userPassword
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(userPassword, salt);
 
-    User.findByIdAndUpdate(req.body._id,
+    User.findByIdAndUpdate(req.params.id,
         {
             $set : {
                 userName: req.body.userName,
                 userEmail: req.body.userEmail,
-                userPassword: hashedPassword
+                userPassword: hashedPassword,
             }
         }).then(data =>{
             if(!data){
@@ -215,9 +217,11 @@ router.put('/update_user', async (req, res) => {
 
 
 // Delete the user info according to that user's _id,  this functionality relates to User management section
-router.post('/delete_user', async (req, res) => {
+// "/:id" is the dynamic url,  the frontend need to provide the user id (in mongodb it is the unique _id of that user) to the below function
+// so that the below function knows which user should be deleted
+router.delete('/delete_user/:id', async (req, res) => {
 
-    const id = req.body._id;
+    const id = req.params.id;
 
     User.findByIdAndRemove(id)
         .then(data => {
@@ -252,21 +256,9 @@ router.get('/quiz_management_page', async (req, res) =>{
 })
 
 
-// in quiz management section home page, user can click "create" button to open a modal (the modal is used to let user enter quiz basic information),
-// then below route function is triggered to display the already-created-questions list (question that belongs to this quiz) in the modal
-router.get('/open_create_quiz_modal', async (req, res) =>{
-    console.log("Now you have opened create-quiz-modal, questions list will be displayed")
-    try {
-        const allQuestionInfo = await Question.find({}).lean().exec()  //TODO: find questions only relate to this quiz
-        res.status(200).json(allQuestionInfo)
-    } catch (error) {
-        console.log(error)
-    }
-})
 
-
-// after clicking the "create" button in quiz managemnet section home page, a modal is popped to let user enter quiz basic information
-// then user clicks "save quiz" button, it will trigger below route function to save quiz basic info into database "quiz" collection
+// after clicking the "Create Quiz" button in quiz managemnet section home page, a modal is popped to let user enter quiz basic information
+// then user clicks "Save Quiz" button, it will trigger below route function to save quiz basic info into database "quiz" collection
 router.post('/create_new_quiz',  async (req,res)=> {
     if(!req.body){
         res.status(400).send({ message : "Create new quiz functionality: Content in request body is empty!"})
@@ -294,6 +286,11 @@ router.post('/create_new_quiz',  async (req,res)=> {
             });
         });
 } )
+
+
+
+
+
 
 
 // in the create-quiz-modal, the user can click "add question" button to open "add question modal", then user can enter question content, answer items, correct answer etc
