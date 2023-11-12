@@ -431,5 +431,32 @@ router.put('/update_questions/:quizId/:questionId', async (req, res) => {
 
 
 
+// Delete the question according to that question's _id,  this functionality relates to Quiz management section
+// "/:questionId" is the dynamic url,  the frontend need to provide question id (in mongodb it is the unique _id of that question) to the below function
+// so that the below function knows which question should be deleted. After the deleting operation, The user will come back to "view question modal"
+router.delete('/delete_questions/:quizId/:questionId', async (req, res) => {
+
+    const questionId = req.params.questionId
+    let quizId = req.params.quizId
+
+    Question.findByIdAndRemove(questionId)
+        .then(data => {
+            if (!data) {
+                res.status(404).send({
+                    message: `Cannot delete question with questionId=${questionId}!`
+                });
+            } else {
+                res.redirect(`/api/open_view_questions_modal/${quizId}`)
+
+            }
+        })
+        .catch(err => {
+            res.status(500).send({
+                message: "Errors, could not delete the question with id=" + questionId
+            });
+        });
+})
+
+
 
 export default router;
