@@ -200,7 +200,7 @@ router.put('/update_user/:id', async (req, res) => {
                 userEmail: req.body.userEmail,
                 userPassword: hashedPassword,
             }
-        }).then(data =>{
+        }, {new: true}).then(data =>{
             if(!data){
                 res.status(404).send({
                     message: "cannot update the user information"
@@ -245,6 +245,7 @@ router.delete('/delete_user/:id', async (req, res) => {
 
 // Quiz management section home page, the employer can get all quiz's basic information from the database, these info will be displayed
 // as a list in quiz management section home page
+// property "_id" of every quiz will be sent to the frontend. This property is very useful for the edit-quiz, delete-quiz functionality
 router.get('/quiz_management_page', async (req, res) =>{
     console.log("Now you are at quiz management section home page")
     try {
@@ -288,9 +289,57 @@ router.post('/create_new_quiz',  async (req,res)=> {
 } )
 
 
+// User can click "Edit Quiz" button, a modal will be popped out to let user edit the basic information of quiz, after clicking "submit" button,
+// the updated contents will be saved in "quiz" collection in database,  and user will return back to quiz management home page
+router.put('/update_quiz/:quizId', async (req, res) => {
+    // 3rd parameter: {new: true} means that the data will get the updated content
+    Quiz.findByIdAndUpdate(req.params.quizId,
+        {
+            $set : {
+                quizName: req.body.quizName,
+                quizTime: req.body.quizTime,
+                questionNumber: req.body.questionNumber,
+            }
+        }, {new: true}).then(data =>{
+        if(!data){
+            res.status(404).send({
+                message: "cannot update the quiz information"
+            })
+        }else {
+            res.status(200).send(data); // the updated content will send to the frontend, so that the quiz list in quiz management home page can be updated
+        }
+    }).catch(err => {
+        res.status(500).send({
+            message: "Error updating the quiz information"
+        })
+    })
+})
 
+// Delete the quiz basic info according to that quiz's _id,  this functionality relates to Quiz management section
+// "/:quizId" is the dynamic url,  the frontend need to provide the quiz id (in mongodb it is the unique _id of that quiz) to the below function
+// so that the below function knows which quiz should be deleted
+router.delete('/delete_quiz/:quizId', async (req, res) => {
 
+    const quizId = req.params.quizId;
 
+    Quiz.findByIdAndRemove(quizId)
+        .then(data => {
+            if (!data) {
+                res.status(404).send({
+                    message: `Cannot delete quiz with quizId=${quizId}!`
+                });
+            } else {
+                res.send({
+                    message: "The quiz was deleted successfully!"
+                });
+            }
+        })
+        .catch(err => {
+            res.status(500).send({
+                message: "Errors, could not delete the quiz with id=" + quizId
+            });
+        });
+})
 
 
 // in the create-quiz-modal, the user can click "add question" button to open "add question modal", then user can enter question content, answer items, correct answer etc
