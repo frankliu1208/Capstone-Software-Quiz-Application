@@ -315,9 +315,12 @@ router.put('/update_quiz/:quizId', async (req, res) => {
     })
 })
 
+
+
 // Delete the quiz basic info according to that quiz's _id,  this functionality relates to Quiz management section
 // "/:quizId" is the dynamic url,  the frontend need to provide the quiz id (in mongodb it is the unique _id of that quiz) to the below function
 // so that the below function knows which quiz should be deleted
+// TODO: questions related to that deleted quiz shall also be deleted
 router.delete('/delete_quiz/:quizId', async (req, res) => {
 
     const quizId = req.params.quizId;
@@ -342,13 +345,31 @@ router.delete('/delete_quiz/:quizId', async (req, res) => {
 })
 
 
-// in the create-quiz-modal, the user can click "add question" button to open "add question modal", then user can enter question content, answer items, correct answer etc
-// in the modal,  after clicking "submit" button,  the below function will be triggered.
-router.post('/add_questions',  async (req,res)=> {
+// Quiz management section home page, the user can click "view questions" button of a specific quiz,  then a "view question modal"
+// will be opened, already-added-questions will be displayed here,  there will be add questions, edit question, delete question buttons
+router.get('/open_view_questions_modal/:quizId', async (req, res) =>{
+    console.log("Now you are at view questions modal")
+    console.log(`this modal belongs to the quiz id ${req.params.quizId}`)
+    try {
+        const allQuestions = await Question.find({  quizId: req.params.quizId }).lean().exec()
+        res.status(200).json(allQuestions)
+    } catch (error) {
+        console.log(error)
+    }
+})
+
+
+
+
+// in quiz management home page, the user can click "view question" button of a specific quiz to open "view question modal", In this modal,
+// the questions list will be displayed.  The user can click "add question" button in this modal to open another modal, which let user enter
+// question type, question answers item,  correct answer etc...  then user can click "submit" button,  the below function will be triggered to save
+// contents to database. The user will come back to "view question modal", newly added question will be displayed in the questions list
+router.post('/add_questions/:quizId',  async (req,res)=> {
     if(!req.body){
         res.status(400).send({ message : "Add new question functionality: Content in request body is empty!"})
     }
-    let quizId       // TODO: how to get quizId
+    let quizId = req.params.quizId
     let questionContent = req.body.questionContent
     let type = req.body.type    // 4 different types: single choice, multiple choice, T/F, free form
     let answersItem = req.body.answersItem
@@ -364,7 +385,7 @@ router.post('/add_questions',  async (req,res)=> {
 
     question.save(question)
         .then(data => {
-            res.redirect('/api/open_create_quiz_modal')
+            res.redirect(`/api/open_view_questions_modal/${quizId}`)
         })
         .catch(err =>{
             res.status(500).send({
@@ -376,7 +397,37 @@ router.post('/add_questions',  async (req,res)=> {
 
 
 
-
+// "/:quizId": the frontend need to provide the quiz id (in mongodb it is the unique _id of that quiz) to the below function
+// "/:questionId":  in mongodb this is the unique _id of the question in question collection.  frontend also need to provide such info to the below function
+// in "view question modal", the questions list will be displayed.  The user can click "edit question" button of a specific question in this modal to open another modal,
+// after editing, user can click "submit" button,  the below function will be triggered to save contents to database.
+// The user will come back to "view question modal", edited-question will be displayed in the questions list
+router.put('/update_questions/:quizId/:questionId', async (req, res) => {
+    // 3rd parameter: {new: true} means that the data will get the updated content
+    let quizId = req.params.quizId
+    Question.findByIdAndUpdate(req.params.questionId,
+        {
+            $set : {
+                questionContent: req.body.questionContent,
+                type: req.body.type,
+                answersItem: req.body.answersItem,
+                correctAnswer: req.body.correctAnswer
+            }
+        }, {new: true}).then(data =>{
+        if(!data){
+            res.status(404).send({
+                message: "cannot update the question"
+            })
+        }else {
+            res.redirect(`/api/open_view_questions_modal/${quizId}`)
+            // res.status(200).send(data); // the updated content will send to the frontend, so that the edited questions can be displayed in the question list in "view question modal"
+        }
+    }).catch(err => {
+        res.status(500).send({
+            message: "Error updating the question "
+        })
+    })
+})
 
 
 

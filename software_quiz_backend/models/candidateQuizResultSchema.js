@@ -8,7 +8,7 @@ const candidateQuizResultModel = new Schema({
     resultId : { type : String},
     resultOverviewId : { type : String},
     questionId : { type : Date},
-    userAnswer : { type : Number },
+    userAnswer : { type : String },
     isCorrect : { type : Boolean}
 })
 
