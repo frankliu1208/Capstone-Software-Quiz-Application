@@ -15,7 +15,7 @@ import { AdminLandingComponent } from './modules/admin-landing/admin-landing.com
 import { QuizComponent } from './modules/quiz/quiz.component';
 import { QuizManagementComponent } from './modules/quiz-management/quiz-management.component';
 
-import { HomeComponent } from './home/home.component';
+import { HomeComponent } from './modules/home/home.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {HttpClientModule} from '@angular/common/http';
 import { NavbarComponent } from './navbar/navbar.component';
@@ -31,7 +31,7 @@ import { NavbarComponent } from './navbar/navbar.component';
     HeaderComponent,
     AdminLandingComponent,
     QuizComponent,
-    QuizManagementComponent
+    QuizManagementComponent,
 
     NavbarComponent
 
