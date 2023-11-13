@@ -1,6 +1,6 @@
 import { Input, Component, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
-import { TestService } from '../services/test.service';
+import { TestService } from '../../core/services/test.service';
 
 @Component({
   selector: 'admin-login',
