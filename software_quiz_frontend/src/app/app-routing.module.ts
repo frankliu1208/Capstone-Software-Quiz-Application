@@ -29,6 +29,7 @@ const routes: Routes = [
     path: 'quiz-management',
     component: QuizManagementComponent
   },
+
 ];
 
 @NgModule({

@@ -6,9 +6,7 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LoginComponent } from './modules/login/login.component';
 import { RegisterComponent } from './register/register.component';
-import { HomeComponent } from './modules/home/home.component';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import {HttpClientModule} from '@angular/common/http'
+
 import { AdminLoginComponent } from './modules/admin-login/admin-login.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCardModule } from '@angular/material/card';
@@ -17,17 +15,26 @@ import { AdminLandingComponent } from './modules/admin-landing/admin-landing.com
 import { QuizComponent } from './modules/quiz/quiz.component';
 import { QuizManagementComponent } from './modules/quiz-management/quiz-management.component';
 
+import { HomeComponent } from './home/home.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {HttpClientModule} from '@angular/common/http';
+import { NavbarComponent } from './navbar/navbar.component';
+
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     RegisterComponent,
     HomeComponent,
+
     AdminLoginComponent,
     HeaderComponent,
     AdminLandingComponent,
     QuizComponent,
     QuizManagementComponent
+
+    NavbarComponent
+
   ],
   imports: [
     BrowserModule,
@@ -35,8 +42,10 @@ import { QuizManagementComponent } from './modules/quiz-management/quiz-manageme
     BrowserAnimationsModule,
     FormsModule,
     HttpClientModule,
+
     MatFormFieldModule,
     MatCardModule,
+
     ReactiveFormsModule
     
   ],

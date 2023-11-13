@@ -4,7 +4,7 @@ const { Schema } = mongoose;
 
 
 /** below define the rules  */
-const resultModel = new Schema({
+const resultOverviewModel = new Schema({
     // userId : { type : String },
     userName : { type : String},
     userEmail : { type : String},
@@ -13,4 +13,4 @@ const resultModel = new Schema({
     timeTaken : { type : Number}
 })
 
-export default mongoose.model('result', resultModel);  // result is the name of the collection in MongoDB database
+export default mongoose.model('resultOverview', resultOverviewModel);  // resultOverview is the name of the collection in MongoDB database
