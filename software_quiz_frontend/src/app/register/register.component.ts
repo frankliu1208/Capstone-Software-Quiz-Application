@@ -31,12 +31,15 @@ export class RegisterComponent {
 
     // Validate that the user filled in all the fields
     if (data.userName == "" || data.userPassword == "" || data.userEmail == ""){
-      Swal.fire("error","Incomplete form, try again")
+      Swal.fire("Missing Form sections","Incomplete form, try again")
     }
 
     else if (!this.validateEmail(this.email)){
-      Swal.fire("error","Please enter a valid email address")
+      Swal.fire("Invalid Email","Please enter a valid email address(eg: myemail@domain,      example@gmail.com")
 
+    }
+    else if (!this.validatePassword(this.password)) {
+      Swal.fire("Invalid Password", "Must contain at least 1 number,uppercase character, lowercase character, and special character ('!@#$%^&*')");
     }
 
     else{
@@ -62,10 +65,20 @@ export class RegisterComponent {
   }
 
 
-  validateEmail(email:any){
+  validateEmail(email:string){
     //regex expression for email check 
     var validRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
     return validRegex.test(email);
+  }
+
+  validatePassword(password:string) {
+    // Password should be at least 6 characters long
+    // Should contain at least 1 uppercase letter
+    // Should contain at least 1 lowercase letter
+    // Should contain at least 1 number
+    // Should contain at least 1 special character from @$!%*#?&
+    var passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{6,}$/;
+    return passwordRegex.test(password);
   }
 }
