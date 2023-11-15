@@ -256,6 +256,24 @@ router.get('/quiz_management_page', async (req, res) =>{
     }
 })
 
+// in quiz management section home page, the employer can click the "eye icon" button of every quiz item in the quiz dispalying list, then
+// the function below will be triggered. (frontend need to provide quizId when making request)
+router.get('/view_quiz_details/:quizId', async (req, res) => {
+    console.log("Now the employer just clicked eye-shaped button to view the quiz details")
+    console.log(`quiz id:  ${req.params.quizId}`)
+    try {
+        const allQuestions = await Question.find({  quizId: req.params.quizId }).lean().exec()
+        const basicQuizInfo = await Quiz.find({_id: req.params.quizId}).lean().exec()
+        console.log(allQuestions)
+        console.log(basicQuizInfo)
+        // combine the 2 infos together
+        const detailedQuizInfo = [...basicQuizInfo, ...allQuestions ]
+        res.status(200).json(detailedQuizInfo) // send back to frontend. in the detailedQuizInfo array, first element is the basic quiz info from quiz collection, elements later are questions info
+    } catch (error) {
+        console.log(error)
+    }
+
+})
 
 
 // after clicking the "Create Quiz" button in quiz managemnet section home page, a modal is popped to let user enter quiz basic information
@@ -316,7 +334,6 @@ router.put('/update_quiz/:quizId', async (req, res) => {
 })
 
 
-
 // Delete the quiz basic info according to that quiz's _id,  this functionality relates to Quiz management section
 // "/:quizId" is the dynamic url,  the frontend need to provide the quiz id (in mongodb it is the unique _id of that quiz) to the below function
 // so that the below function knows which quiz should be deleted
@@ -360,7 +377,6 @@ router.get('/open_view_questions_modal/:quizId', async (req, res) =>{
 
 
 
-
 // in quiz management home page, the user can click "view question" button of a specific quiz to open "view question modal", In this modal,
 // the questions list will be displayed.  The user can click "add question" button in this modal to open another modal, which let user enter
 // question type, question answers item,  correct answer etc...  then user can click "submit" button,  the below function will be triggered to save
@@ -393,7 +409,6 @@ router.post('/add_questions/:quizId',  async (req,res)=> {
             });
         });
 } )
-
 
 
 
