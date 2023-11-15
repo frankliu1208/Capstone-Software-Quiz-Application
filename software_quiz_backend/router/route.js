@@ -4,6 +4,8 @@ import jwt from 'jsonwebtoken';
 import User from '../models/userSchema.js';
 import Quiz from '../models/quizSchema.js';
 import Question from '../models/questionSchema.js';
+import ResultsOverview from '../models/resultOverviewSchema.js';
+import CandidateQuizResultSchema from "../models/candidateQuizResultSchema.js";
 import data from "../database/data.js";
 
 const router = Router();
@@ -470,6 +472,39 @@ router.delete('/delete_questions/:quizId/:questionId', async (req, res) => {
                 message: "Errors, could not delete the question with id=" + questionId
             });
         });
+})
+
+
+
+// Review results section home page, the employer can get all already-finished quiz's basic information from the database, these info will be displayed as a list.
+router.get('/review_results_home_page', async (req, res) =>{
+    console.log("Now you are at reveiw results section home page")
+    try {
+        const allFinishedQuizInfo = await ResultsOverview.find({}).lean().exec()
+        res.status(200).json(allFinishedQuizInfo)
+    } catch (error) {
+        console.log(error)
+    }
+})
+
+
+// in Review Result section home page, the employer can click the "eye icon" button of every quiz item in the quiz dispalying list, then
+// the function below will be triggered. (frontend need to provide quizId when making request)
+router.get('/view_already_finished_quiz_details/:resultOverviewId', async (req, res) => {
+    console.log("Now the employer just clicked eye-shaped button to view the already-finished quiz details")
+    console.log(`Employer wants to see the detailed info of an already-finished quiz with quiz id:  ${req.params.quizId}`)
+    try {
+        const basicFinishedQuizInfo = await ResultsOverview.find({ _id : req.params.resultOverviewId}).lean().exec()
+        const allFinishedQuestions = await CandidateQuizResultSchema.find({ resultOverviewId: req.params.resultOverviewId }).lean().exec()
+        console.log(basicFinishedQuizInfo)
+        console.log(allFinishedQuestions)
+        // combine the 2 infos together
+        const detailedFinishedQuizInfo = [...basicFinishedQuizInfo, ...allFinishedQuestions ]
+        res.status(200).json(detailedFinishedQuizInfo) // send back to frontend. in the detailedQuizInfo array, first element is the basic quiz info from quiz collection, elements later are questions info
+    } catch (error) {
+        console.log(error)
+    }
+
 })
 
 
