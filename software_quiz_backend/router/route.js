@@ -114,6 +114,7 @@ router.get('/user', async (req, res) => {
                 message: "unauthenticated"
             })
         }
+        
         const user = await User.findOne({ _id: claims._id });
         const { userPassword, ...data } = await user.toJSON();
         res.send(data);

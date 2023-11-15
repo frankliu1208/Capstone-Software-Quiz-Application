@@ -50,9 +50,12 @@ export class RegisterComponent {
           // console.log('Request successful:', response);
               Swal.fire("success", response.data.message)
 
-         
+              .then( ()=>
+              window.location.href = '/'
+            )
 
         })
+        
         .catch( (error) => {
           // console.error('Request failed:', error.response.data.message);
       Swal.fire("error", error.response.data.message)
