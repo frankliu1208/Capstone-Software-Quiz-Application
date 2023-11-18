@@ -5,6 +5,7 @@ import nodemailer from 'nodemailer';
 
 export async function sendEmailToCandidate(candidateEmail, quizName) {
 
+    console.log("now we are in sendEmailToCandidate function")
     // TODO:  need to test below links is working
     let htmlOutput = `
         <p>Click <a href="http://localhost:5000/api/candidate_take_quiz/${quizName}">here</a> to take the quiz.</p>
@@ -14,8 +15,12 @@ export async function sendEmailToCandidate(candidateEmail, quizName) {
     let transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
+            type: 'OAuth2',
             user: 'osucs467quizapp@gmail.com',
-            pass: 'CS467quizappOSU'
+            pass: 'CS467quizappOSU',
+            clientId: '464562373315-aams5un736pm3pamqktup9aojqshmtv0.apps.googleusercontent.com',
+            clientSecret: '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',
+            refreshToken: '1//04UYtme_9y3CwCgYIARAAGAQSNwF-L9IrMfqk6tflOYthwSip5ijfA8SfOBwwddVN-N68XC6ZuoE76XSBlEsngc3koJgKUVlK5ko'
         }
     });
 

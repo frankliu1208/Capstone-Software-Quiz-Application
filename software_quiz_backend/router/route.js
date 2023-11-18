@@ -475,7 +475,7 @@ router.delete('/delete_questions/:quizId/:questionId', async (req, res) => {
         });
 })
 
-
+// -------------------------------- Review results section below ------------------------------
 
 // Review results section home page, the employer can get all already-finished quiz's basic information from the database, these info will be displayed as a list.
 router.get('/review_results_home_page', async (req, res) =>{
@@ -532,11 +532,13 @@ router.post('/send_mail_to_candidate', async (req, res) => {
     if(!req.body){
         res.status(400).send({ message : "Send email to candidate functionality: Content in request body is empty!"})
     }
+    // frontend should provide below 2 parameters to this route function
     let candidateEmailAddress = req.body.candidateEmailAddress
-    let quizName = req.body.quizName
+    let quizName = req.body.quizId
+
     // below function is to implement sending email to candidate using nodemailer library
     await sendEmailToCandidate(candidateEmailAddress, quizName)
-
+    res.status(400).send({ message : "Send email to candidate successfully"})
 })
 
 // the candidate opens the email which is sent by employer, and clicks the link. then below function is triggered
