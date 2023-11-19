@@ -4,7 +4,10 @@ import jwt from 'jsonwebtoken';
 import User from '../models/userSchema.js';
 import Quiz from '../models/quizSchema.js';
 import Question from '../models/questionSchema.js';
+import ResultsOverview from '../models/resultOverviewSchema.js';
+import CandidateQuizResultSchema from "../models/candidateQuizResultSchema.js";
 import data from "../database/data.js";
+import {sendEmailToCandidate} from "../utils/email.js";
 
 const router = Router();
 
@@ -257,6 +260,24 @@ router.get('/quiz_management_page', async (req, res) =>{
     }
 })
 
+// in quiz management section home page, the employer can click the "eye icon" button of every quiz item in the quiz dispalying list, then
+// the function below will be triggered. (frontend need to provide quizId when making request)
+router.get('/view_quiz_details/:quizId', async (req, res) => {
+    console.log("Now the employer just clicked eye-shaped button to view the quiz details")
+    console.log(`quiz id:  ${req.params.quizId}`)
+    try {
+        const allQuestions = await Question.find({  quizId: req.params.quizId }).lean().exec()
+        const basicQuizInfo = await Quiz.find({_id: req.params.quizId}).lean().exec()
+        console.log(allQuestions)
+        console.log(basicQuizInfo)
+        // combine the 2 infos together
+        const detailedQuizInfo = [...basicQuizInfo, ...allQuestions ]
+        res.status(200).json(detailedQuizInfo) // send back to frontend. in the detailedQuizInfo array, first element is the basic quiz info from quiz collection, elements later are questions info
+    } catch (error) {
+        console.log(error)
+    }
+
+})
 
 
 // after clicking the "Create Quiz" button in quiz managemnet section home page, a modal is popped to let user enter quiz basic information
@@ -317,7 +338,6 @@ router.put('/update_quiz/:quizId', async (req, res) => {
 })
 
 
-
 // Delete the quiz basic info according to that quiz's _id,  this functionality relates to Quiz management section
 // "/:quizId" is the dynamic url,  the frontend need to provide the quiz id (in mongodb it is the unique _id of that quiz) to the below function
 // so that the below function knows which quiz should be deleted
@@ -361,7 +381,6 @@ router.get('/open_view_questions_modal/:quizId', async (req, res) =>{
 
 
 
-
 // in quiz management home page, the user can click "view question" button of a specific quiz to open "view question modal", In this modal,
 // the questions list will be displayed.  The user can click "add question" button in this modal to open another modal, which let user enter
 // question type, question answers item,  correct answer etc...  then user can click "submit" button,  the below function will be triggered to save
@@ -394,7 +413,6 @@ router.post('/add_questions/:quizId',  async (req,res)=> {
             });
         });
 } )
-
 
 
 
@@ -458,6 +476,79 @@ router.delete('/delete_questions/:quizId/:questionId', async (req, res) => {
         });
 })
 
+// -------------------------------- Review results section below ------------------------------
+
+// Review results section home page, the employer can get all already-finished quiz's basic information from the database, these info will be displayed as a list.
+router.get('/review_results_home_page', async (req, res) =>{
+    console.log("Now you are at reveiw results section home page")
+    try {
+        const allFinishedQuizInfo = await ResultsOverview.find({}).lean().exec()
+        res.status(200).json(allFinishedQuizInfo)
+    } catch (error) {
+        console.log(error)
+    }
+})
+
+
+// in Review Result section home page, the employer can click the "eye icon" button of every quiz item in the quiz dispalying list, then
+// the function below will be triggered. (frontend need to provide quizId when making request)
+router.get('/view_already_finished_quiz_details/:resultOverviewId', async (req, res) => {
+    console.log("Now the employer just clicked eye-shaped button to view the already-finished quiz details")
+    console.log(`Employer wants to see the detailed info of an already-finished quiz with quiz id:  ${req.params.quizId}`)
+    try {
+        const basicFinishedQuizInfo = await ResultsOverview.find({ _id : req.params.resultOverviewId}).lean().exec()
+        const allFinishedQuestions = await CandidateQuizResultSchema.find({ resultOverviewId: req.params.resultOverviewId }).lean().exec()
+        console.log(basicFinishedQuizInfo)
+        console.log(allFinishedQuestions)
+        // combine the 2 infos together
+        const detailedFinishedQuizInfo = [...basicFinishedQuizInfo, ...allFinishedQuestions ]
+        res.status(200).json(detailedFinishedQuizInfo) // send back to frontend. in the detailedQuizInfo array, first element is the basic quiz info from quiz collection, elements later are questions info
+    } catch (error) {
+        console.log(error)
+    }
+
+})
+
+
+// -------------------------------- Send quiz to candidate section below ------------------------------
+
+
+// Send quiz to candidate section home page, after the employer clicks "Administer Quiz" in the application landing home page,
+// below functions will be triggered,   quiz list will be fetched from database and send to frontend, so that:
+// employer can go to send-quiz-to-candidate section home page, he/she can enter the candidate's email address and choose the quiz from a drop-down-list
+router.get('/send_quiz_to_candidate_home_page', async (req, res) =>{
+    console.log("Now you are at send quiz to candidate section home page, you can enter candidate's email address and choose a quiz")
+    try {
+        const allQuizInformation = await Quiz.find({}).lean().exec()
+        res.status(200).json(allQuizInformation)
+    } catch (error) {
+        console.log(error)
+    }
+})
+
+
+// after employer enters candidate's email and chooses the quiz, he/she clicks "Send Test" button, below functions will be triggered
+// frontend need to provide candidate email address and quiz name in the request body
+router.post('/send_mail_to_candidate', async (req, res) => {
+    if(!req.body){
+        res.status(400).send({ message : "Send email to candidate functionality: Content in request body is empty!"})
+    }
+    // frontend should provide below 2 parameters to this route function
+    let candidateEmailAddress = req.body.candidateEmailAddress
+    let quizName = req.body.quizId
+
+    // below function is to implement sending email to candidate using nodemailer library
+    await sendEmailToCandidate(candidateEmailAddress, quizName)
+    res.status(400).send({ message : "Send email to candidate successfully"})
+})
+
+// the candidate opens the email which is sent by employer, and clicks the link. then below function is triggered
+// the frontend page related to the below function is "candidate about to taking the quiz page",  the quiz name will be displayed, some sentences to tell the candidate that he/she is about to take the quiz of "quizName"
+// a "Start the Quiz" button will be put in this page
+router.get('/candidate_take_quiz/:quizName', async (req, res) => {
+    console.log("The candidate has clicked the link in the email")
+    // TODO:  send the quizName, quizId to the frontend.
+})
 
 
 export default router;
