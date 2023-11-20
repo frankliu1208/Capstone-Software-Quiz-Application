@@ -13,13 +13,13 @@ const router = Router();
 
 
 
-// After successfully logged-in,  suer will come to the application Main page.
+// After successfully logged-in,  user will come to the application Main page.
 // TODO: 1. user cannot directly come to this main page by entering the URL "/main";
 router.get('/main', (req, res) => {
     console.log("redirected to the main page")
     // res.render('main');
     res.send({
-        message: "Main Page"
+        message: "Rerouting to Main Page"
     })
 })
 
@@ -104,6 +104,15 @@ router.post('/login', async (req, res) => {
     res.redirect('/api/main')
 })
 
+//log the current user out
+
+router.post('/logout', (req, res) => {
+    res.cookie("jwt", "", {maxAge:0})
+
+    res.send({
+        message: "Success: User Logged out"
+    })
+})
 
 // Display of current logged-in-user info (only return 1 user,  not all users)
 router.get('/user', async (req, res) => {
@@ -117,6 +126,7 @@ router.get('/user', async (req, res) => {
                 message: "unauthenticated"
             })
         }
+        
         const user = await User.findOne({ _id: claims._id });
         const { userPassword, ...data } = await user.toJSON();
         res.send(data);

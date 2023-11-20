@@ -29,6 +29,10 @@ const routes: Routes = [
     path: 'quiz-management',
     component: QuizManagementComponent
   },
+  {
+    path: 'home',
+    component: HomeComponent
+  }
 
 ];
 
