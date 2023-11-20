@@ -45,13 +45,15 @@ export class RegisterComponent {
     else{
       // all details are correct, make post request
       
-      axios.post('http://localhost:5000/api/register', data)
+      axios.post('http://localhost:5000/api/register', data ,{withCredentials:true})
         .then( (response) => {
           // console.log('Request successful:', response);
               Swal.fire("success", response.data.message)
 
               .then( ()=>
-              window.location.href = '/'
+              // window.location.href = '/'
+              window.location.href = '/home'
+
             )
 
         })

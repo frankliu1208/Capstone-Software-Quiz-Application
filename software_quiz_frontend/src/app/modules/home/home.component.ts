@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import axios from 'axios';
+import { Emitters } from 'src/app/emmiters/emitter';
 
 @Component({
   selector: 'app-home',
@@ -8,7 +9,7 @@ import axios from 'axios';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
-  message: " "
+  message: string = " ";
 
   constructor (private http: HttpClient){
     
@@ -22,14 +23,19 @@ export class HomeComponent implements OnInit {
     //   this.message = `Hi ${res.userName}`;
     // })
 
-    axios.get('http://localhost:5000/api/user')
+    axios.get('http://localhost:5000/api/user', {withCredentials:true})
     .then((response) => {
       // Handle the successful response here
-      console.log('GET request successful:', response.data);
+      this.message = `The following user is logged in : ${response.data.userName}`;
+      Emitters.authEmitter.emit(true); //user is authenticated
+      // console.log('GET request successful:', response.data);
     })
     .catch((error) => {
       // Handle errors here
-      console.error('GET request failed:', error);
+      this.message = `You are not currently logged in`;
+      Emitters.authEmitter.emit(false); // user is not authenticated
+
+      // console.error('GET request failed:', error);
     });
     
   }
