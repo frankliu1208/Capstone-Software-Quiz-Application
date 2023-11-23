@@ -255,6 +255,8 @@ router.delete('/delete_user/:id', async (req, res) => {
         });
 })
 
+// -------------------------------- Quiz management section below ------------------------------
+
 
 // Quiz management section home page, the employer can get all quiz's basic information from the database, these info will be displayed
 // as a list in quiz management section home page
@@ -520,7 +522,7 @@ router.get('/view_already_finished_quiz_details/:resultOverviewId', async (req, 
 // -------------------------------- Send quiz to candidate section below ------------------------------
 
 
-// Send quiz to candidate section home page, after the employer clicks "Administer Quiz" in the application landing home page,
+// "Send-quiz-to-candidate" section home page, after the employer clicks "Administer Quiz" in the application landing home page,
 // below functions will be triggered,   quiz list will be fetched from database and send to frontend, so that:
 // employer can go to send-quiz-to-candidate section home page, he/she can enter the candidate's email address and choose the quiz from a drop-down-list
 router.get('/send_quiz_to_candidate_home_page', async (req, res) =>{
@@ -535,23 +537,27 @@ router.get('/send_quiz_to_candidate_home_page', async (req, res) =>{
 
 
 // after employer enters candidate's email and chooses the quiz, he/she clicks "Send Test" button, below functions will be triggered
-// frontend need to provide candidate email address and quiz name in the request body
+// frontend need to provide candidate email address, quizId and quiz name in the request body
 router.post('/send_mail_to_candidate', async (req, res) => {
     if(!req.body){
         res.status(400).send({ message : "Send email to candidate functionality: Content in request body is empty!"})
     }
     // frontend should provide below 2 parameters to this route function
     let candidateEmailAddress = req.body.candidateEmailAddress
-    let quizName = req.body.quizId
+    let quizId = req.body.quizId
+    let quizName = req.body.quizName
 
     // below function is to implement sending email to candidate using nodemailer library
-    await sendEmailToCandidate(candidateEmailAddress, quizName)
+    await sendEmailToCandidate(candidateEmailAddress, quizId, quizName)
     res.status(400).send({ message : "Send email to candidate successfully"})
 })
 
-// the candidate opens the email which is sent by employer, and clicks the link. then below function is triggered
-// the frontend page related to the below function is "candidate about to taking the quiz page",  the quiz name will be displayed, some sentences to tell the candidate that he/she is about to take the quiz of "quizName"
+// the candidate opens the email which is sent by employer, and clicks the link. then below function is triggered: the quiz name will be displayed, some sentences to tell the candidate that he/she is about to take the quiz of "quizName"
 // a "Start the Quiz" button will be put in this page
+// a new frontend page needs to be designed for the candidates to take the quiz.
+// (Three pages needed: 1. home page displaying the basic info of the quiz that the candidate is about to take;
+// 2. taking quiz page which all questions are displayed and candidates can choose/enter the answer, a count-down timer is also needed;
+// 3. closing page: when candidates submit the quiz, a message displaying "you have finished the quiz", the score might be also displayed here because after submitting the quiz, our application should calculate the score automatically)
 router.get('/candidate_take_quiz/:quizName', async (req, res) => {
     console.log("The candidate has clicked the link in the email")
     // TODO:  send the quizName, quizId to the frontend.

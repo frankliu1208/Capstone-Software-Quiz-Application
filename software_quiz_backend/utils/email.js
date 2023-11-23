@@ -3,12 +3,12 @@ import nodemailer from 'nodemailer';
 
 
 
-export async function sendEmailToCandidate(candidateEmail, quizName) {
+export async function sendEmailToCandidate(candidateEmail, quizId, quizName) {
 
     console.log("now we are in sendEmailToCandidate function")
-    // TODO:  need to test below links is working
     let htmlOutput = `
-        <p>Click <a href="http://localhost:5000/api/candidate_take_quiz/${quizName}">here</a> to take the quiz.</p>
+        <p>Dear friend, you are invited to join a test, the test name is ${quizName}</p>
+        <p>Click <a href="http://localhost:5000/api/candidate_take_quiz/${quizId}">here</a> to take the quiz.</p>
     `
     console.log(htmlOutput)
 
@@ -28,7 +28,7 @@ export async function sendEmailToCandidate(candidateEmail, quizName) {
     let info = await transporter.sendMail({
         from: "osucs467quizapp@gmail.com",           // sender address
         to: candidateEmail,                   // list of receivers
-        subject: "The quiz is completed by the candidate",                // Subject line
+        subject: "You have a new quiz to take",                // Subject line
         text: `Dear friend, you are invited to join a test, the test name is ${quizName}`,
         html: htmlOutput,
     })
