@@ -572,12 +572,34 @@ router.get('/candidate_take_quiz/:quizId', async (req, res) => {
 })
 
 
-// the candidate clicks "begin quiz" button at candidate quiz starting page, frontend need to send quizId when making request
-// backend will return quiz info and all questions related to that qui.  frontend can render these info into 1 page or several pages so candidate can enter answers
-router.get('/quiz_started_for_candidate/:quizId', async (req, res) => {
+// the candidate clicks "begin quiz" button at candidate quiz starting page, frontend need to send quizId and candidateEmail when making request
+// backend will return quiz info and all questions related to that quiz.  frontend can render these info into 1 page or several pages so candidate can enter answers
+// additionally, save candidateEmail, quizId, testDate into result-overview collection,  other column just put the default value to "-1". Because we need the _id of the saved item and it will be used later
+router.get('/quiz_started_for_candidate/:candidateEmail/:quizId', async (req, res) => {
     console.log("Now candidate has clicked begin-quiz button, backend will send all related questions to frontend ")
     console.log(`quiz id from frontend is:  ${req.params.quizId}`)
     try {
+
+        let quizId = req.params.quizId
+        let candidateEmail = req.params.candidateEmail
+        let testDate = Date.now()
+
+        const resultsOverview = new ResultsOverview({
+            candidateEmail: candidateEmail,
+            quizId: quizId,
+            testDate: testDate,
+        })
+
+        resultsOverview.save(resultsOverview)
+            .then(data => {
+                console.log("Save some data into result overview collection")
+            })
+            .catch(err =>{
+                res.status(500).send({
+                    message : err.message || "Error happened during candidate begining quiz process"
+                });
+            });
+
         const allQuestions = await Question.find({  quizId: req.params.quizId }).lean().exec()
         const basicQuizInfo = await Quiz.find({_id: req.params.quizId}).lean().exec()
         console.log(allQuestions)
@@ -589,6 +611,14 @@ router.get('/quiz_started_for_candidate/:quizId', async (req, res) => {
         console.log(error)
     }
 
+})
+
+
+
+// after clicking "submit" button, or time is running out,  the frontend will send post request, the answers entered by candidate will be sent
+// to below handling function.
+router.post('/candidat_submit_quiz', async (req, res) =>{
+  // TODO
 })
 
 
