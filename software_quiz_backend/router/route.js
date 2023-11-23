@@ -616,9 +616,46 @@ router.get('/quiz_started_for_candidate/:candidateEmail/:quizId', async (req, re
 
 
 // after clicking "submit" button, or time is running out,  the frontend will send post request, the answers entered by candidate will be sent
-// to below handling function.
+// to below handling function. save the related results into result overview collection and candidate quiz result collection
 router.post('/candidat_submit_quiz', async (req, res) =>{
-  // TODO
+
+    if(!req.body){
+        res.status(400).send({ message : "Candidate submits the quiz: Content in request body is empty!"})
+    }
+
+    // frontend should provide below parameters to this route function
+    let timeTaken = req.body.timeTaken
+
+    /* structure like:   (json-format) (please take care of the type of userAnswers, please go to our MongoDB database, questions collection, have a look of "correctAnswer" in each item.  user answer shall be the same type with correctAnswer under every question type)
+        candidateAnswersArray = [
+
+            {
+            "questionId": "...1...",
+            "userAnswer": ["A"],
+            },
+            {
+            "questionId": ".....2....",
+            "userAnswer": ["A","B","C"]
+            },
+            {
+            "questionId": "....3.....",
+            "userAnswer": ["T"]
+            },
+            {
+            "questionId": "......4.....",
+            "userAnswer": ["this is free form answer"]
+            },
+        ]
+
+    */
+    let candidateAnswersArray = req.body.candidateAnswersArray
+
+    // TODO  call the automaticEvaluateScore() to get the score
+
+    // TODO  save data into result overview collection and candidate quiz result collection
+
+
+
 })
 
 
