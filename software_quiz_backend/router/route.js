@@ -558,9 +558,37 @@ router.post('/send_mail_to_candidate', async (req, res) => {
 // (Three pages needed: 1. home page displaying the basic info of the quiz that the candidate is about to take;
 // 2. taking quiz page which all questions are displayed and candidates can choose/enter the answer, a count-down timer is also needed;
 // 3. closing page: when candidates submit the quiz, a message displaying "you have finished the quiz", the score might be also displayed here because after submitting the quiz, our application should calculate the score automatically)
-router.get('/candidate_take_quiz/:quizName', async (req, res) => {
+router.get('/candidate_take_quiz/:quizId', async (req, res) => {
     console.log("The candidate has clicked the link in the email")
-    // TODO:  send the quizName, quizId to the frontend.
+    console.log(`the quiz id getting from the sendEmailToCandiate function is :  ${req.params.quizId}`)
+    try {
+        const basicQuizInfo = await Quiz.find({_id: req.params.quizId}).lean().exec()
+        console.log(basicQuizInfo)
+        // send back to frontend.  these information can be displayed at "candidate quiz starting page"
+        res.status(200).json(basicQuizInfo)
+    } catch (error) {
+        console.log(error)
+    }
+})
+
+
+// the candidate clicks "begin quiz" button at candidate quiz starting page, frontend need to send quizId when making request
+// backend will return quiz info and all questions related to that qui.  frontend can render these info into 1 page or several pages so candidate can enter answers
+router.get('/quiz_started_for_candidate/:quizId', async (req, res) => {
+    console.log("Now candidate has clicked begin-quiz button, backend will send all related questions to frontend ")
+    console.log(`quiz id from frontend is:  ${req.params.quizId}`)
+    try {
+        const allQuestions = await Question.find({  quizId: req.params.quizId }).lean().exec()
+        const basicQuizInfo = await Quiz.find({_id: req.params.quizId}).lean().exec()
+        console.log(allQuestions)
+        console.log(basicQuizInfo)
+        // combine question info and quiz info together
+        const detailedQuizInfo = [...basicQuizInfo, ...allQuestions ]
+        res.status(200).json(detailedQuizInfo) // send back to frontend. in the detailedQuizInfo array, first element is the basic quiz info from quiz collection,  elements later are questions info
+    } catch (error) {
+        console.log(error)
+    }
+
 })
 
 
