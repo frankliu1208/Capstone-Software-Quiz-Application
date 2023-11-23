@@ -498,7 +498,6 @@ router.get('/review_results_home_page', async (req, res) =>{
     }
 })
 
-
 // in Review Result section home page, the employer can click the "eye icon" button of every quiz item in the quiz dispalying list, then
 // the function below will be triggered. (frontend need to provide quizId when making request)
 router.get('/view_already_finished_quiz_details/:resultOverviewId', async (req, res) => {
@@ -515,7 +514,6 @@ router.get('/view_already_finished_quiz_details/:resultOverviewId', async (req, 
     } catch (error) {
         console.log(error)
     }
-
 })
 
 
