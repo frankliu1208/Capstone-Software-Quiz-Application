@@ -8,6 +8,7 @@ import ResultsOverview from '../models/resultOverviewSchema.js';
 import CandidateQuizResultSchema from "../models/candidateQuizResultSchema.js";
 import data from "../database/data.js";
 import {sendEmailToCandidate} from "../utils/email.js";
+import {automaticEvaluateScore} from "../utils/automaticEvaluateScore.js";
 
 const router = Router();
 
@@ -626,12 +627,12 @@ router.post('/candidat_submit_quiz', async (req, res) =>{
     // frontend should provide below parameters to this route function
     let timeTaken = req.body.timeTaken
 
-    /* structure like:   (json-format) (please take care of the type of userAnswers, please go to our MongoDB database, questions collection, have a look of "correctAnswer" in each item.  user answer shall be the same type with correctAnswer under every question type)
+    /* structure like:   (json-format) (please take care of the type of property "userAnswers", please go to our MongoDB database, questions collection, take a look at "correctAnswer" in each item.  userAnswer shall be the same type with correctAnswer under every question type)
         candidateAnswersArray = [
 
             {
             "questionId": "...1...",
-            "userAnswer": ["A"],
+            "userAnswer": ["A"]
             },
             {
             "questionId": ".....2....",
@@ -644,11 +645,44 @@ router.post('/candidat_submit_quiz', async (req, res) =>{
             {
             "questionId": "......4.....",
             "userAnswer": ["this is free form answer"]
-            },
+            }
         ]
 
     */
     let candidateAnswersArray = req.body.candidateAnswersArray
+
+    // below get all user answers from above structure and keep them into a two-dimensional array, structure will be like:
+    //  [
+    //     ["A"],
+    //     ["A", "B", "C"],
+    //     ["T"],
+    //     ["this is free form answer"]
+    //  ]
+    const allUserAnswers = candidateAnswersArray.map(answer => answer.userAnswer)
+
+    // allQuestionIds will be the structure: ["...1...", ".....2....", "....3.....", "......4....."]
+    const allQuestionIds = candidateAnswersArray.map(answer => answer.questionId)
+
+    // according to question id,  use findById() to get the correctAnswer of each question
+    try {
+        // correctAnswerArray is two-demensional array
+        let correctAnswerArray = []
+        for (let i=0; i < allQuestionIds.length; i++) {
+            const questionId = allQuestionIds[i]
+            const questionInfo = await Question.findById(questionId).lean().exec()
+            if (questionInfo && questionInfo.correctAnswer) {
+                const correctAnswer = questionInfo.correctAnswer
+                correctAnswerArray.push(correctAnswer)
+            } else {
+                console.error(`Question not found for ID: ${questionId}`)
+            }
+        }
+
+        // for testing, delete later
+        // res.status(200).json(correctAnswerArray)
+    } catch (error) {
+        console.log(error)
+    }
 
     // TODO  call the automaticEvaluateScore() to get the score
 
