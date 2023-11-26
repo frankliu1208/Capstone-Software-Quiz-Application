@@ -678,16 +678,18 @@ router.post('/candidat_submit_quiz', async (req, res) =>{
             }
         }
 
-        // for testing, delete later
-        // res.status(200).json(correctAnswerArray)
+        // call the automaticEvaluateScore() to get the score,  here get the percentage score
+        const percentageScore = automaticEvaluateScore( allUserAnswers, correctAnswerArray )
+
+        res.status(200).json(percentageScore)
+        // TODO  save data into result overview collection and candidate quiz result collection
+
+
+
+
     } catch (error) {
         console.log(error)
     }
-
-    // TODO  call the automaticEvaluateScore() to get the score
-
-    // TODO  save data into result overview collection and candidate quiz result collection
-
 
 
 })
