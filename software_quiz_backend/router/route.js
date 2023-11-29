@@ -7,7 +7,7 @@ import Question from '../models/questionSchema.js';
 import ResultsOverview from '../models/resultOverviewSchema.js';
 import CandidateQuizResultSchema from "../models/candidateQuizResultSchema.js";
 import data from "../database/data.js";
-import {sendEmailToCandidate} from "../utils/email.js";
+import {sendEmailToCandidate, sendEmailToEmployer} from "../utils/email.js";
 import {automaticEvaluateScore} from "../utils/automaticEvaluateScore.js";
 
 const router = Router();
@@ -550,7 +550,7 @@ router.post('/send_mail_to_candidate', async (req, res) => {
 
     // below function is to implement sending email to candidate using nodemailer library
     await sendEmailToCandidate(candidateEmailAddress, quizId, quizName)
-    res.status(400).send({ message : "Send email to candidate successfully"})
+    res.status(200).send({ message : "Send email to candidate successfully"})
 })
 
 // the candidate opens the email which is sent by employer, and clicks the link. then below function is triggered: the quiz name will be displayed, some sentences to tell the candidate that he/she is about to take the quiz of "quizName"
@@ -634,6 +634,7 @@ router.post('/candidat_submit_quiz', async (req, res) =>{
     // frontend should provide below parameters to this route function
     let resultOverviewId = req.body.resultOverviewId   // later we have to update score and timeTaken into existing item in result overview sheet, therefore, here we need resultOverviewId
     let timeTaken = req.body.timeTaken
+    let candidateEmail = req.body.candidateEmail  // later backend will send email to the employer with candidate email info
 
     /* structure like:   (json-format) (please take care of the type of property "userAnswers", please go to our MongoDB database, questions collection, take a look at "correctAnswer" in each item.  userAnswer shall be the same type with correctAnswer under every question type)
         candidateAnswersArray = [
@@ -711,6 +712,7 @@ router.post('/candidat_submit_quiz', async (req, res) =>{
             })
         })
 
+        await sendEmailToEmployer(candidateEmail)
         // send the score back to frontend so the score can be displayed after candidate submits the quiz
         res.status(200).json(percentageScore)
 
