@@ -7,7 +7,8 @@ import Question from '../models/questionSchema.js';
 import ResultsOverview from '../models/resultOverviewSchema.js';
 import CandidateQuizResultSchema from "../models/candidateQuizResultSchema.js";
 import data from "../database/data.js";
-import {sendEmailToCandidate} from "../utils/email.js";
+import {sendEmailToCandidate, sendEmailToEmployer} from "../utils/email.js";
+import {automaticEvaluateScore} from "../utils/automaticEvaluateScore.js";
 
 const router = Router();
 
@@ -255,6 +256,8 @@ router.delete('/delete_user/:id', async (req, res) => {
         });
 })
 
+// -------------------------------- Quiz management section below ------------------------------
+
 
 // Quiz management section home page, the employer can get all quiz's basic information from the database, these info will be displayed
 // as a list in quiz management section home page
@@ -323,7 +326,7 @@ router.post('/create_new_quiz',  async (req,res)=> {
 // User can click "Edit Quiz" button, a modal will be popped out to let user edit the basic information of quiz, after clicking "submit" button,
 // the updated contents will be saved in "quiz" collection in database,  and user will return back to quiz management home page
 router.put('/update_quiz/:quizId', async (req, res) => {
-    // 3rd parameter: {new: true} means that the data will get the updated content
+    // 3rd parameter: {new: true} means that the returned data will get the updated content
     Quiz.findByIdAndUpdate(req.params.quizId,
         {
             $set : {
@@ -498,7 +501,6 @@ router.get('/review_results_home_page', async (req, res) =>{
     }
 })
 
-
 // in Review Result section home page, the employer can click the "eye icon" button of every quiz item in the quiz dispalying list, then
 // the function below will be triggered. (frontend need to provide quizId when making request)
 router.get('/view_already_finished_quiz_details/:resultOverviewId', async (req, res) => {
@@ -515,14 +517,13 @@ router.get('/view_already_finished_quiz_details/:resultOverviewId', async (req, 
     } catch (error) {
         console.log(error)
     }
-
 })
 
 
 // -------------------------------- Send quiz to candidate section below ------------------------------
 
 
-// Send quiz to candidate section home page, after the employer clicks "Administer Quiz" in the application landing home page,
+// "Send-quiz-to-candidate" section home page, after the employer clicks "Administer Quiz" in the application landing home page,
 // below functions will be triggered,   quiz list will be fetched from database and send to frontend, so that:
 // employer can go to send-quiz-to-candidate section home page, he/she can enter the candidate's email address and choose the quiz from a drop-down-list
 router.get('/send_quiz_to_candidate_home_page', async (req, res) =>{
@@ -537,26 +538,187 @@ router.get('/send_quiz_to_candidate_home_page', async (req, res) =>{
 
 
 // after employer enters candidate's email and chooses the quiz, he/she clicks "Send Test" button, below functions will be triggered
-// frontend need to provide candidate email address and quiz name in the request body
+// frontend need to provide candidate email address, quizId and quiz name in the request body
 router.post('/send_mail_to_candidate', async (req, res) => {
     if(!req.body){
         res.status(400).send({ message : "Send email to candidate functionality: Content in request body is empty!"})
     }
     // frontend should provide below 2 parameters to this route function
     let candidateEmailAddress = req.body.candidateEmailAddress
-    let quizName = req.body.quizId
+    let quizId = req.body.quizId
+    let quizName = req.body.quizName
 
     // below function is to implement sending email to candidate using nodemailer library
-    await sendEmailToCandidate(candidateEmailAddress, quizName)
-    res.status(400).send({ message : "Send email to candidate successfully"})
+    await sendEmailToCandidate(candidateEmailAddress, quizId, quizName)
+    res.status(200).send({ message : "Send email to candidate successfully"})
 })
 
-// the candidate opens the email which is sent by employer, and clicks the link. then below function is triggered
-// the frontend page related to the below function is "candidate about to taking the quiz page",  the quiz name will be displayed, some sentences to tell the candidate that he/she is about to take the quiz of "quizName"
+// the candidate opens the email which is sent by employer, and clicks the link. then below function is triggered: the quiz name will be displayed, some sentences to tell the candidate that he/she is about to take the quiz of "quizName"
 // a "Start the Quiz" button will be put in this page
-router.get('/candidate_take_quiz/:quizName', async (req, res) => {
+// a new frontend page needs to be designed for the candidates to take the quiz.
+// (Three pages needed: 1. home page displaying the basic info of the quiz that the candidate is about to take;
+// 2. taking quiz page which all questions are displayed and candidates can choose/enter the answer, a count-down timer is also needed;
+// 3. closing page: when candidates submit the quiz, a message displaying "you have finished the quiz", the score might be also displayed here because after submitting the quiz, our application should calculate the score automatically)
+router.get('/candidate_take_quiz/:quizId', async (req, res) => {
     console.log("The candidate has clicked the link in the email")
-    // TODO:  send the quizName, quizId to the frontend.
+    console.log(`the quiz id getting from the sendEmailToCandiate function is :  ${req.params.quizId}`)
+    try {
+        const basicQuizInfo = await Quiz.find({_id: req.params.quizId}).lean().exec()
+        console.log(basicQuizInfo)
+        // send back to frontend.  these information can be displayed at "candidate quiz starting page"
+        res.status(200).json(basicQuizInfo)
+    } catch (error) {
+        console.log(error)
+    }
+})
+
+
+// the candidate clicks "begin quiz" button at candidate quiz starting page, frontend need to send quizId and candidateEmail when making request
+// backend will return quiz info and all questions related to that quiz.  frontend can render these info into 1 page or several pages so candidate can enter answers
+// additionally, save candidateEmail, quizId, testDate into result-overview collection,  other column just put the default value to "-1". Because we need the _id of the saved item and it will be used later
+router.get('/quiz_started_for_candidate/:candidateEmail/:quizId', async (req, res) => {
+
+    console.log(`Now candidate has clicked begin-quiz button, backend will send all related questions to frontend,  quiz id from frontend is:  ${req.params.quizId}`)
+    try {
+        let quizId = req.params.quizId
+        let candidateEmail = req.params.candidateEmail
+        let testDate = Date.now()
+
+        const resultsOverview = new ResultsOverview({
+            candidateEmail: candidateEmail,
+            quizId: quizId,
+            testDate: testDate,
+        })
+
+        let resultOverviewSheetData
+        resultsOverview.save(resultsOverview)
+            .then(data => {
+                console.log("Save some data into result overview collection")
+                resultOverviewSheetData = data
+            })
+            .catch(err =>{
+                res.status(500).send({
+                    message : err.message || "Error happened during candidate begining quiz process"
+                });
+            });
+
+        const allQuestions = await Question.find({  quizId: req.params.quizId }).lean().exec()
+        const basicQuizInfo = await Quiz.find({_id: req.params.quizId}).lean().exec()
+
+        console.log(resultOverviewSheetData)  // later in below '/candidat_submit_quiz' route function, we need the value of "_id" in the object "resultOverviewSheetData", this is the reason we integrate into detailedQuizInfo array
+
+        // combine result overview sheet info,  quizinfo, all questions together
+        const detailedQuizInfo = [ resultOverviewSheetData, ...basicQuizInfo, ...allQuestions ]
+
+
+        // send back to frontend.  some infos from detailedQuizInfo array are needed later when candidate submit the quiz
+        // for example: later backend need the value of "_id" in the object "resultOverviewSheetData", in below route function,  backend need "_id" from "let resultOverviewId = req.body.resultOverviewId"  (_id and resultOverviewId is the same thing)
+        // therefore,  when frontend get these data from here,  need to store these data in some form.  (like "_id" is useful for backend but does not have any sence for common user,  then one possible way is to put it into a hidden item within the form)
+        res.status(200).json(detailedQuizInfo)
+
+    } catch (error) {
+        console.log(error)
+    }
+})
+
+
+
+// after clicking "submit" button, or time is running out,  the frontend will send post request, the answers entered by candidate will be sent
+// to below handling function. The handling function below will save (actually is updating because we only update the score, for other columns they already have data) the related results into result overview collection,
+// and return the score back to frontend. so the candidate can directly see the result of the submitted test
+router.post('/candidat_submit_quiz', async (req, res) =>{
+    if(!req.body){
+        res.status(400).send({ message : "Candidate submits the quiz: Content in request body is empty!"})
+    }
+
+    // frontend should provide below parameters to this route function
+    let resultOverviewId = req.body.resultOverviewId   // later we have to update score and timeTaken into existing item in result overview sheet, therefore, here we need resultOverviewId
+    let timeTaken = req.body.timeTaken
+    let candidateEmail = req.body.candidateEmail  // later backend will send email to the employer with candidate email info
+
+    /* structure like:   (json-format) (please take care of the type of property "userAnswers", please go to our MongoDB database, questions collection, take a look at "correctAnswer" in each item.  userAnswer shall be the same type with correctAnswer under every question type)
+        candidateAnswersArray = [
+            {
+            "questionId": "...1...",
+            "userAnswer": ["A"]
+            },
+            {
+            "questionId": ".....2....",
+            "userAnswer": ["A","B","C"]
+            },
+            {
+            "questionId": "....3.....",
+            "userAnswer": ["T"]
+            },
+            {
+            "questionId": "......4.....",
+            "userAnswer": ["this is free form answer"]
+            }
+        ]
+    */
+    let candidateAnswersArray = req.body.candidateAnswersArray
+
+
+    // below get all user answers from above structure and keep them into a two-dimensional array, structure will be like:
+    //  [
+    //     ["A"],
+    //     ["A", "B", "C"],
+    //     ["T"],
+    //     ["this is free form answer"]
+    //  ]
+    const allUserAnswers = candidateAnswersArray.map(answer => answer.userAnswer)
+
+
+    // allQuestionIds will be the structure: ["...1...", ".....2....", "....3.....", "......4....."]
+    const allQuestionIds = candidateAnswersArray.map(answer => answer.questionId)
+
+    // according to question id,  use findById() to get the correctAnswer of each question
+    try {
+        // correctAnswerArray is two-demensional array
+        let correctAnswerArray = []
+        for (let i=0; i < allQuestionIds.length; i++) {
+            const questionId = allQuestionIds[i]
+            const questionInfo = await Question.findById(questionId).lean().exec()
+            if (questionInfo && questionInfo.correctAnswer) {
+                const correctAnswer = questionInfo.correctAnswer
+                correctAnswerArray.push(correctAnswer)
+            } else {
+                console.error(`Question not found for ID: ${questionId}`)
+            }
+        }
+
+        // call the automaticEvaluateScore() to get the score,  here get the percentage score
+        const percentageScore = automaticEvaluateScore( allUserAnswers, correctAnswerArray )
+
+
+        // save data into result overview collection
+        ResultsOverview.findByIdAndUpdate(resultOverviewId,
+            {
+                $set : {
+                    score: percentageScore,
+                    timeTaken: timeTaken,
+                }
+            }, {new: true}).then(data =>{
+            if(!data){
+                res.status(404).send({
+                    message: "cannot update the quiz overview sheet"
+                })
+            }else {
+                console.log(`sucessfully update the result overview sheet: ${data}`)
+            }
+        }).catch(err => {
+            res.status(500).send({
+                message: "Error updating the quiz overview sheet"
+            })
+        })
+
+        await sendEmailToEmployer(candidateEmail)
+        // send the score back to frontend so the score can be displayed after candidate submits the quiz
+        res.status(200).json(percentageScore)
+
+    } catch (error) {
+        console.log(error)
+    }
 })
 
 
