@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { DataService } from 'src/app/core/services/data.service';
+import { Component, ChangeDetectorRef } from '@angular/core';
+import axios from 'axios';
 
 @Component({
   selector: 'app-quiz-management',
@@ -9,20 +9,53 @@ import { DataService } from 'src/app/core/services/data.service';
 export class QuizManagementComponent {
   data: any[] = [];
 
-  constructor(private dataService: DataService) {}
-
+  constructor(private cdr: ChangeDetectorRef){};
   ngOnInit(): void {
     this.loadData();
   }
 
-  loadData(): void {
-    this.dataService.getData().subscribe(
-      (response) => {
-        this.data = response;
-      },
-      (error) => {
-        console.error('Error fetching data:', error);
-      }
-    );
+
+
+  async loadData(): Promise<void> {
+    try {
+      const quizDetails = await this.getQuizDetailsForUserQuizes();
+      console.log('Quiz Details:', quizDetails);
+  
+      // Assuming quizDetails is an array of objects with properties matching your MongoDB schema
+      this.data = quizDetails.map((quiz) => ({
+        quizName: quiz[0].quizName,
+        time: quiz[0].quizTime,
+        questions: quiz[0].questionNumber,
+        createDate: quiz[0].createTime,
+        quizId:quiz[0]._id, // quiz id's from userQuizes array
+      }));
+  
+      this.cdr.detectChanges(); // Trigger change detection
+    } catch (error) {
+      console.error('Error fetching quiz details:', error);
+      // Handle errors if needed
+    }
   }
+  
+  
+
+  async getQuizDetailsForUserQuizes(): Promise<any[]> {
+    try {
+      
+      const currentUser = await axios.get('http://localhost:5000/api/user',{withCredentials:true});
+      const userQuizes = currentUser.data.userQuizes;
+  
+      const quizDetailsPromises = userQuizes.map(async (quizId: string) => {
+        // console.log("getQuizDetailsForUserQuizes", quizDetailsPromises);
+        const response = await axios.get(`http://localhost:5000/api/view_quiz_details/${quizId}`);
+        return response.data;
+      });
+  
+      const quizDetails = await Promise.all(quizDetailsPromises);
+      return quizDetails;
+    } catch (error) {
+      throw error;
+    }
+  }
+  
 }

@@ -1,22 +1,29 @@
+<button class="create-quiz-btn" [routerLink]="['/landing']" mat-button>Create Quiz</button>
 
-<button [routerLink]="['/landing']" mat-button>Create Quiz</button>
-<table>
-    <thead>
-      <tr>
-        <th>View</th>
-        <th>Quiz Name</th>
-        <th>Time</th>
-        <th># of Questions</th>
-        <th>Create Date</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let item of data">
-        <td>ICON HERE</td>
-        <td>{{ item.quizName }}</td>
-        <td>{{ item.time }}</td>
-        <td>{{ item.questions }}</td>
-        <td>{{ item.createDate }}</td>
-      </tr>
-    </tbody>
-  </table>
+<table class="quiz-table">
+  <thead>
+    <tr>
+      <th class="quiz-name-header">Quiz Name</th>
+      <th class="time-header">Time</th>
+      <th class="questions-header"># of Questions</th>
+      <th class="create-date-header">Create Date</th>
+      <th class="crud-header">View</th>
+      <th class="quiz-id-header">Quiz-id</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let item of data" class="quiz-row">
+      <td class="quiz-name">{{ item.quizName }}</td>
+      <td class="time">{{ item.time }}</td>
+      <td class="questions">{{ item.questions }}</td>
+      <td class="create-date">{{ item.createDate }}</td>
+      <td class="crud-icon">
+        <button>Edit</button>
+        <button>View</button>
+        <button>Delete</button>
+
+      </td>
+      <td class="create-date">{{ item.quizId }}</td>
+    </tr>
+  </tbody>
+</table>
