@@ -358,6 +358,18 @@ router.delete('/delete_quiz/:quizId', async (req, res) => {
 
     const quizId = req.params.quizId;
 
+    Question.deleteMany({quizId: quizId})
+        .then(data => {
+            if (!data) {
+                console.log(`Cannot delete related questions with quizId=${quizId}!`)
+            } else {
+                console.log("The questions related to the quiz was deleted successfully!")
+            }
+        })
+        .catch(err => {
+            console.log("Errors, could not delete the related questions")
+        });
+
     Quiz.findByIdAndRemove(quizId)
         .then(data => {
             if (!data) {
