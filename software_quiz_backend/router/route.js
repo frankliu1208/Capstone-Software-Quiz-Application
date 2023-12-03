@@ -201,33 +201,78 @@ router.post('/add_new_user',  async (req,res)=> {
 // Update the user info, this functionality relates to User management section
 // dynamic url:  "/:id" aims to tell the below function which user needs to be updated.  Updated contents from the user input at the frontend
 // will be transfered to below function through req.body
+//--------------------------------------------------------------------
+// router.put('/update_user/:id', async (req, res) => {
+
+//     let userPassword = req.body.userPassword
+//     const salt = await bcrypt.genSalt(10);
+//     const hashedPassword = await bcrypt.hash(userPassword, salt);
+
+//     User.findByIdAndUpdate(req.params.id,
+//         {
+//             $set : {
+//                 userName: req.body.userName,
+//                 userEmail: req.body.userEmail,
+//                 userPassword: hashedPassword,
+//             }
+//         }, {new: true}).then(data =>{
+//             if(!data){
+//                 res.status(404).send({
+//                     message: "cannot update the user information"
+//                 })
+//             }else {
+//                 res.status(200).send(data);
+//             }
+//     }).catch(err => {
+//         res.status(500).send({
+//             message: "Error updating the user information"
+//         })
+//     })
+// })
+
 router.put('/update_user/:id', async (req, res) => {
+    try {
+      const updateFields = {};
+  
+      if (req.body.userName) {
+        updateFields.userName = req.body.userName;
+      }
+  
+      if (req.body.userEmail) {
+        updateFields.userEmail = req.body.userEmail;
+      }
+  
+      if (req.body.userPassword) {
+        const salt = await bcrypt.genSalt(10);
+        updateFields.userPassword = await bcrypt.hash(req.body.userPassword, salt);
+      }
 
-    let userPassword = req.body.userPassword
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(userPassword, salt);
-
-    User.findByIdAndUpdate(req.params.id,
-        {
-            $set : {
-                userName: req.body.userName,
-                userEmail: req.body.userEmail,
-                userPassword: hashedPassword,
-            }
-        }, {new: true}).then(data =>{
-            if(!data){
-                res.status(404).send({
-                    message: "cannot update the user information"
-                })
-            }else {
-                res.status(200).send(data);
-            }
-    }).catch(err => {
-        res.status(500).send({
-            message: "Error updating the user information"
-        })
-    })
-})
+      if(req.body.userQuizes){
+        updateFields.userQuizes = req.body.userQuizes;
+      }
+  
+      const updatedUser = await User.findByIdAndUpdate(
+        req.params.id,
+        { $set: updateFields },
+        { new: true }
+      );
+  
+      if (!updatedUser) {
+        return res.status(404).send({
+          message: "Cannot update user information. User not found."
+        });
+      }
+  
+      res.status(200).send(updatedUser);
+    } catch (err) {
+      console.error(err);
+      res.status(500).send({
+        message: "Error updating user information."
+      });
+    }
+  });
+  
+//----------------------------------------------------------------------
 
 
 // Delete the user info according to that user's _id,  this functionality relates to User management section
@@ -313,7 +358,12 @@ router.post('/create_new_quiz',  async (req,res)=> {
 
     quiz.save(quiz)
         .then(data => {
-            res.redirect('/api/quiz_management_page')
+            // res.redirect('/api/quiz_management_')
+            // res.redirect('/api/main')
+            res.status(201).send({
+                _id: data._id,
+                message: "Quiz Created Succesfully"
+            })
         })
         .catch(err =>{
             res.status(500).send({
