@@ -20,7 +20,7 @@ router.get('/main', (req, res) => {
     console.log("redirected to the main page")
     // res.render('main');
     res.send({
-        message: "Rerouting to Main Page"
+        message: "Rerouting to your dashboard"
     })
 })
 
@@ -427,22 +427,40 @@ router.delete('/delete_quiz/:quizId', async (req, res) => {
         });
 })
 
-
+//---------------------------------------------------------------------------------
 // Quiz management section home page, the user can click "view questions" button of a specific quiz,  then a "view question modal"
 // will be opened, already-added-questions will be displayed here,  there will be add questions, edit question, delete question buttons
-router.get('/open_view_questions_modal/:quizId', async (req, res) =>{
-    console.log("Now you are at view questions modal")
-    console.log(`this modal belongs to the quiz id ${req.params.quizId}`)
+// router.get('/open_view_questions_modal/:quizId', async (req, res) =>{
+//     console.log("Now you are at view questions modal")
+//     console.log(`this modal belongs to the quiz id ${req.params.quizId}`)
+//     try {
+//         const allQuestions = await Question.find({  quizId: req.params.quizId }).lean().exec()
+//         res.status(200).json(allQuestions)
+//     } catch (error) {
+//         console.log(error)
+//     }
+// })
+
+
+//view individual Question using question id
+router.get('/view_question/:questionId', async(req, res) =>{
     try {
-        const allQuestions = await Question.find({  quizId: req.params.quizId }).lean().exec()
-        res.status(200).json(allQuestions)
+        const singleQuestion = await Question.findById(req.params.questionId).lean().exec();
+
+        if (!singleQuestion) {
+            // If the question with the given ID is not found
+            return res.status(404).json({ message: 'Question not found' });
+        }
+
+        res.status(200).json(singleQuestion);
     } catch (error) {
-        console.log(error)
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error' });
     }
 })
+//---------------------------------------------------------------------------------
 
-
-
+//
 // in quiz management home page, the user can click "view question" button of a specific quiz to open "view question modal", In this modal,
 // the questions list will be displayed.  The user can click "add question" button in this modal to open another modal, which let user enter
 // question type, question answers item,  correct answer etc...  then user can click "submit" button,  the below function will be triggered to save
