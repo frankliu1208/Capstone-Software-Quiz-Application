@@ -1,0 +1,26 @@
+<!-- view-quiz.component.html -->
+
+<div class="quiz-details">
+    <p>Quiz ID: {{ quizId }}</p>
+  </div>
+  
+  <div *ngFor="let question of quizQuestions">
+    <div class="question">
+      <p>Question: {{ question.questionContent }}</p>
+      <p>Type: {{ question.type }}</p>
+
+      <ul>
+        <li *ngFor="let option of question.answersItem">({{ option.label }}) {{option.content}}</li>
+      </ul>
+
+      <p>Answer/s</p>
+      <ul>
+        <li *ngFor="let answer of question.correctAnswer">{{ answer }}</li>
+      </ul>
+    </div>
+  </div>
+  
+  <div>
+    <button class="create-quiz-btn" [routerLink]="['/quiz-management']" mat-button>Go back</button>
+  </div>
+  

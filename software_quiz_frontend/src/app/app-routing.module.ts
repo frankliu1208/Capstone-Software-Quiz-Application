@@ -3,10 +3,11 @@ import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './modules/login/login.component';
 import { HomeComponent } from './modules/home/home.component';
 import { RegisterComponent } from './register/register.component';
-import { AdminLoginComponent } from './modules/admin-login/admin-login.component';
+// import { AdminLoginComponent } from './modules/admin-login/admin-login.component';
 import { AdminLandingComponent } from './modules/admin-landing/admin-landing.component';
 import { QuizManagementComponent } from './modules/quiz-management/quiz-management.component';
 import { AddQuizComponent } from './modules/add-quiz/add-quiz.component';
+import { ViewQuizComponent } from './modules/view-quiz/view-quiz.component';
 
 const routes: Routes = [
 
@@ -16,7 +17,8 @@ const routes: Routes = [
   },
   {
     path: '',
-    component: AdminLoginComponent
+    component: HomeComponent
+
   },
   {
     path: 'register',
@@ -34,8 +36,13 @@ const routes: Routes = [
     path: 'home',
     component: HomeComponent
   },
-  {path: 'add-quiz',
-    component: AddQuizComponent}
+  {
+    path: 'add-quiz',
+    component: AddQuizComponent},
+  {
+    path: 'view-quiz/:id',
+    component: ViewQuizComponent
+  }
 
 ];
 

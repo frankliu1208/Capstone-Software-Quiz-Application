@@ -1,5 +1,6 @@
 import { Component, ChangeDetectorRef } from '@angular/core';
 import axios from 'axios';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-quiz-management',
@@ -9,7 +10,8 @@ import axios from 'axios';
 export class QuizManagementComponent {
   data: any[] = [];
 
-  constructor(private cdr: ChangeDetectorRef){};
+
+  constructor(private cdr: ChangeDetectorRef, private router: Router){};
   ngOnInit(): void {
     this.loadData();
   }
@@ -24,9 +26,10 @@ export class QuizManagementComponent {
       this.data = quizDetails.map((quiz) => ({
         quizName: quiz[0].quizName,
         time: quiz[0].quizTime,
-        questions: quiz[0].questionNumber,
+        questions: quiz[0].quizQuestions.length,
         createDate: quiz[0].createTime,
         quizId:quiz[0]._id, // quiz id's from userQuizes array
+        
       }));
   
       this.cdr.detectChanges(); // Trigger change detection
@@ -85,6 +88,12 @@ export class QuizManagementComponent {
     } catch (error) {
       throw error;
     }
+  }
+
+
+  viewQuiz(quizId:string): void{
+    console.log("Quiz Id sent", quizId);
+    this.router.navigate(['view-quiz', quizId])
   }
 
   

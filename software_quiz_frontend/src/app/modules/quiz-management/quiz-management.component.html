@@ -19,7 +19,7 @@
       <td class="create-date">{{ item.createDate }}</td>
       <td class="crud-icon">
         <button>Edit</button>
-        <button>View</button>
+        <button (click)="viewQuiz(item.quizId)">View</button>
         <button (click)="deleteQuiz(item.quizId)">Delete</button>
 
       </td>
