@@ -58,5 +58,35 @@ export class QuizManagementComponent {
     }
   }
 
+  async deleteQuiz(quizId: string){
+    try {
+      
+      //grab current user data
+      const currentUser = await axios.get('http://localhost:5000/api/user',{withCredentials:true});
+      //grab array holding all quizes for current user
+      const userData = currentUser.data;
+
+      // Remove quizId from userQuizes array
+        const updatedUserQuizes = userData.userQuizes.filter((id: string) => id !== quizId);
+        console.log(quizId);
+        console.log(updatedUserQuizes)
+      //update the users quiz list to include the newly created quiz
+      const updateUserData = {
+        // userName : userData.userName,
+        // userEmail : userData.userEmail,
+        // userPassword : userData.userPassword,
+        userQuizes : updatedUserQuizes
+      }
+      await axios.put(`http://localhost:5000/api/update_user/${userData._id}`, updateUserData, {withCredentials:true})
+      await axios.delete(`http://localhost:5000/api/delete_quiz/${quizId}`)
+      .then(()=> {
+        window.location.href = '/quiz-management'
+      })
+
+    } catch (error) {
+      throw error;
+    }
+  }
+
   
 }
