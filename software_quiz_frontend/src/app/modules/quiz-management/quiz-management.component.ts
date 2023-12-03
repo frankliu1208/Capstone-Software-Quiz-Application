@@ -15,13 +15,12 @@ export class QuizManagementComponent {
   }
 
 
-
   async loadData(): Promise<void> {
     try {
       const quizDetails = await this.getQuizDetailsForUserQuizes();
       // console.log('Quiz Details:', quizDetails);
   
-      // Assuming quizDetails is an array of objects with properties matching your MongoDB schema
+      // quizDetails is an array of objects with properties matching MongoDB schema
       this.data = quizDetails.map((quiz) => ({
         quizName: quiz[0].quizName,
         time: quiz[0].quizTime,

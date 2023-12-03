@@ -18,8 +18,7 @@ import mongoose from "mongoose";
 const { Schema } = mongoose;
 
 const questionModel = new Schema({
-    quizId: { type: String },  // this property is needed as we need to know this question shall belong to which quiz
-    
+    // quizId: { type: String },  // this property is needed as we need to know this question shall belong to which quiz
     questionContent: { type: String },
     type: { type: String },
     answersItem: { type: Array, default: [] },
