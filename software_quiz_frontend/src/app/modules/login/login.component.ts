@@ -35,7 +35,9 @@ export class LoginComponent {
 
             .then( ()=>
             // window.location.href = '/'
-            window.location.href = '/home'
+            // window.location.href = '/home'
+            window.location.href = '/landing'
+
 
           )
 

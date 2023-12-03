@@ -19,6 +19,7 @@ import { HomeComponent } from './modules/home/home.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {HttpClientModule} from '@angular/common/http';
 import { NavbarComponent } from './navbar/navbar.component';
+import { AddQuizComponent } from './modules/add-quiz/add-quiz.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { NavbarComponent } from './navbar/navbar.component';
     QuizComponent,
     QuizManagementComponent,
 
-    NavbarComponent
+    NavbarComponent,
+      AddQuizComponent,
 
   ],
   imports: [

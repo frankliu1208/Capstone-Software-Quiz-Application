@@ -19,7 +19,7 @@ export class QuizManagementComponent {
   async loadData(): Promise<void> {
     try {
       const quizDetails = await this.getQuizDetailsForUserQuizes();
-      console.log('Quiz Details:', quizDetails);
+      // console.log('Quiz Details:', quizDetails);
   
       // Assuming quizDetails is an array of objects with properties matching your MongoDB schema
       this.data = quizDetails.map((quiz) => ({
@@ -46,7 +46,7 @@ export class QuizManagementComponent {
       const userQuizes = currentUser.data.userQuizes;
   
       const quizDetailsPromises = userQuizes.map(async (quizId: string) => {
-        // console.log("getQuizDetailsForUserQuizes", quizDetailsPromises);
+
         const response = await axios.get(`http://localhost:5000/api/view_quiz_details/${quizId}`);
         return response.data;
       });
@@ -57,5 +57,6 @@ export class QuizManagementComponent {
       throw error;
     }
   }
+
   
 }

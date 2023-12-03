@@ -6,6 +6,7 @@ import { RegisterComponent } from './register/register.component';
 import { AdminLoginComponent } from './modules/admin-login/admin-login.component';
 import { AdminLandingComponent } from './modules/admin-landing/admin-landing.component';
 import { QuizManagementComponent } from './modules/quiz-management/quiz-management.component';
+import { AddQuizComponent } from './modules/add-quiz/add-quiz.component';
 
 const routes: Routes = [
 
@@ -32,7 +33,9 @@ const routes: Routes = [
   {
     path: 'home',
     component: HomeComponent
-  }
+  },
+  {path: 'add-quiz',
+    component: AddQuizComponent}
 
 ];
 
