@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import axios
  from 'axios';
+ import Swal from 'sweetalert2';
 @Component({
   selector: 'app-add-quiz',
   templateUrl: './add-quiz.component.html',
@@ -41,9 +42,11 @@ export class AddQuizComponent {
         userQuizes : [...userData.userQuizes, newQuizId]
       }
       await axios.put(`http://localhost:5000/api/update_user/${userData._id}`, updateUserData, {withCredentials:true})
-      .then(()=> {
-        window.location.href = '/quiz-management'
-      })
+      Swal.fire({
+        icon: 'success',
+        title: 'Success',
+        text: `Quiz Created`,
+      }).then(() => { window.location.href = '/quiz-management'; });
 
     } catch (error) {
       throw error;

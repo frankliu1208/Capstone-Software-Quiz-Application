@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-view-quiz',
@@ -42,7 +43,11 @@ export class ViewQuizComponent implements OnInit {
      quizName : this.quizName,
      quizTime : this.quizTime
    });
-    // console.log('Updating quiz:');
+   Swal.fire({
+    icon: 'success',
+    title: 'Success',
+    text: `Quiz Info updated`,
+  })
   }
   deleteQuestion(questionId:string): void{
     
@@ -64,7 +69,12 @@ export class ViewQuizComponent implements OnInit {
    
  axios.delete(`http://localhost:5000/api/delete_questions/${questionId}`)
 
-   window.location.reload();
+ Swal.fire({
+  icon: 'success',
+  title: 'Success',
+  text: `Question Deleted`,
+}).then(()=> { window.location.reload();})
+  
  })
  .catch(error => {
    console.error('Error getting quiz details:', error.response.data.message);
@@ -161,8 +171,12 @@ export class ViewQuizComponent implements OnInit {
       correctAnswer: [],
       // Add other form fields for options, correct answer, etc.
   };
-
-     window.location.reload();
+  Swal.fire({
+    icon: 'success',
+    title: 'Success',
+    text: `Question Added`,
+  }).then(()=> { window.location.reload();})
+    
    })
    .catch(error => {
      console.error('Error getting quiz details:', error.response.data.message);

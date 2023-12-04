@@ -31,7 +31,14 @@ export class LoginComponent {
       axios.post('http://localhost:5000/api/login', data ,{withCredentials:true})
       .then( (response) => {
         // console.log('Request successful:', response);
-            Swal.fire("success", response.data.message)
+            // Swal.fire("success", response.data.message)
+
+            Swal.fire({
+              icon: 'success',
+              title: 'Success',
+              text: `${response.data.message}`,
+            })
+            
 
             .then( ()=>
             // window.location.href = '/'
@@ -45,7 +52,13 @@ export class LoginComponent {
       
       .catch( (error) => {
         // console.error('Request failed:', error.response.data.message);
-    Swal.fire("error", error.response.data.message)
+    // Swal.fire("error", error.response.data.message)
+    Swal.fire({
+      icon: 'error',
+      title: 'error',
+      text: `${error.response.data.message}`,
+    })
+    
 
       });
     }
