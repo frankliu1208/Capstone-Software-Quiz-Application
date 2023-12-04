@@ -79,12 +79,12 @@ export class QuizManagementComponent {
       }
       await axios.put(`http://localhost:5000/api/update_user/${userData._id}`, updateUserData, {withCredentials:true})
       await axios.delete(`http://localhost:5000/api/delete_quiz/${quizId}`)
-      
+
       Swal.fire({
         icon: 'success',
         title: 'Success',
         text: `Quiz Deleted`,
-      }).then(() => { window.location.reload(); });
+      }).then(() => { window.location.href = '/quiz-management'; });
 
     } catch (error) {
       throw error;

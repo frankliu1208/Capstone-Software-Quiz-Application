@@ -73,7 +73,7 @@ export class ViewQuizComponent implements OnInit {
   icon: 'success',
   title: 'Success',
   text: `Question Deleted`,
-}).then(()=> { window.location.reload();})
+}).then(()=> { window.location.href = `/view-quiz/${this.quizId}`;})
   
  })
  .catch(error => {
@@ -175,7 +175,7 @@ export class ViewQuizComponent implements OnInit {
     icon: 'success',
     title: 'Success',
     text: `Question Added`,
-  }).then(()=> { window.location.reload();})
+  }).then(()=> { window.location.href = `/view-quiz/${this.quizId}`;})
     
    })
    .catch(error => {
