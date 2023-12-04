@@ -41,11 +41,11 @@ export class ViewQuizComponent implements OnInit {
     if (this.addQuestionForm.type === 'tf') {
       this.addQuestionForm.answersItem = [{'label': 'T', 'content':'T'}, {'label': 'F', 'content':'F'}];
   }
-    console.log(this.quizId);
-    console.log(this.addQuestionForm.questionContent);
-    console.log(this.addQuestionForm.type);
-    console.log(this.addQuestionForm.answersItem);
-    console.log(this.addQuestionForm.correctAnswer);
+  
+  //add question to quizQuestions array
+
+  //Create Question
+  // axios.post(`http://localhost:5000/api/add_questions/${this.quizId}`, this.addQuestionForm)
     
   }
   ngOnInit(): void {
