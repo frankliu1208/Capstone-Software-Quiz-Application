@@ -10,6 +10,9 @@
   
   <div *ngFor="let question of quizQuestions">
     <div class="question">
+      <p>Question Id: {{question._id}}</p>
+      <button class="delete-btn" (click)="deleteQuestion(question._id)">Delete</button>
+
       <p>Question: {{ question.questionContent }}</p>
       <p *ngIf="question.type === 'mc'">Type: Multiple Choice</p>
       <p *ngIf="question.type === 'ff'">Type: Free Form</p>
@@ -50,7 +53,7 @@
         <!-- Additional form fields based on the selected type -->
         <div *ngIf="addQuestionForm.type === 'tf'">
             <!-- <label for="options">Answer Choices:</label> -->
-            <input type="hidden" id="answersItem" name="answersItem" [value]="addQuestionForm.answersItem.join(',')">
+            <!-- <input type="hidden" id="answersItem" name="answersItem" [value]="addQuestionForm.answersItem.join(',')"> -->
 
             <!-- Dropdown for True/False questions -->
             <label for="correctAnswer">Correct Answer:</label>
@@ -58,6 +61,13 @@
                 <option value="T">True</option>
                 <option value="F">False</option>
             </select>
+        </div>
+
+
+        <div *ngIf="addQuestionForm.type === 'ff'">
+            <label for="correctAnswer">Free Form Answer:</label>
+            <textarea id="correctAnswer" name="correctAnswer" [(ngModel)]="addQuestionForm.correctAnswer" required></textarea>
+
         </div>
 
         

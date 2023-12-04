@@ -70,13 +70,10 @@ export class QuizManagementComponent {
 
       // Remove quizId from userQuizes array
         const updatedUserQuizes = userData.userQuizes.filter((id: string) => id !== quizId);
-        console.log(quizId);
-        console.log(updatedUserQuizes)
+        // console.log(quizId);
+        // console.log(updatedUserQuizes)
       //update the users quiz list to include the newly created quiz
       const updateUserData = {
-        // userName : userData.userName,
-        // userEmail : userData.userEmail,
-        // userPassword : userData.userPassword,
         userQuizes : updatedUserQuizes
       }
       await axios.put(`http://localhost:5000/api/update_user/${userData._id}`, updateUserData, {withCredentials:true})
@@ -92,7 +89,7 @@ export class QuizManagementComponent {
 
 
   viewQuiz(quizId:string): void{
-    console.log("Quiz Id sent", quizId);
+    // console.log("Quiz Id sent", quizId);
     this.router.navigate(['view-quiz', quizId])
   }
 
