@@ -34,7 +34,18 @@ export class AdministerQuizComponent {
 
   sendQuizToUser(): void {
   
-    // Logic here to handle form submission
+  //confirm email is valid
+  if (!this.validateEmail(this.formData.email)){
+    // Swal.fire("Invalid Email","Please enter a valid email address(eg: myemail@domain,      example@gmail.com")
+    Swal.fire({
+      icon: 'error',
+      title: 'Invalid Email',
+      text: `Please enter a valid email address(eg: myemail@domain,      example@gmail.com)`,
+    })
+  }
+
+  else{
+      // Logic here to handle form submission
   axios.post('http://localhost:5000/api/send_mail_to_candidate', {
     'candidateEmailAddress': this.formData.email,
     'quizId' : this.formData.selectedQuiz._id,
@@ -54,11 +65,10 @@ export class AdministerQuizComponent {
     console.error('Error sending mail:', error);
   });
 
-  // console.log(this.formData.email);
-  // console.log(this.formData.selectedQuiz._id)
-  // console.log(this.formData.selectedQuiz.quizName);
+  }
 
-  // console.log(this.formData)
+  
+
   }
 
   async getCurrentUsersQuizes() {
@@ -74,5 +84,13 @@ export class AdministerQuizComponent {
     } catch (error) {
       console.error('Error getting quiz data:', error);
     }
+  }
+
+
+  validateEmail(email:string){
+    //regex expression for email check 
+    var validRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+    return validRegex.test(email);
   }
 }
