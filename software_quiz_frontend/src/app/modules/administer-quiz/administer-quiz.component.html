@@ -1,0 +1,28 @@
+
+
+<div class="quiz-form">
+    <h2>Administer Test</h2>
+    <form (submit)="sendQuizToUser()">
+      <!-- Email Input -->
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" [(ngModel)]="formData.email" required>
+        <br>
+
+      <!-- Confirm Email Input -->
+      <label for="confirmEmail">Confirm Email:</label>
+      <input type="email" id="confirmEmail" name="confirmEmail" [(ngModel)]="formData.confirmEmail" required>
+        <br>
+        
+      <!-- Select Quiz Dropdown -->
+      <label for="selectedQuiz">Select Quiz:</label>
+      <select id="selectedQuiz" name="selectedQuiz" [(ngModel)]="formData.selectedQuiz" required>
+        <option *ngFor="let quiz of currentUserQuizes" [value]="quiz._id">{{ quiz.quizName }}</option>
+      </select>
+      <br>
+
+  
+      <!-- Submit Button -->
+      <button type="submit">Send Quiz</button>
+    </form>
+  </div>
+  
