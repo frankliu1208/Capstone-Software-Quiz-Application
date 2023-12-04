@@ -1,0 +1,25 @@
+
+  <div>
+
+    <h1>Add a new Quiz</h1>
+    <p>Here you add basic quiz info to create a quiz then later you can add questions to this quiz</p>
+
+    <form (ngSubmit) = "addQuizSubmitForm()">
+        <div>
+            <label for="quizName">Quiz Name:</label>
+            <input type="text" name="quizName" id="quizName" required [(ngModel)]="quizName">
+          </div>
+          <div>
+            <label for="quizTime">Quiz time:</label>
+            <input type="number" name="quizTime" id="quizTime" required [(ngModel)]="quizTime" 
+            placeholder="In minutes"
+            min = "0" step="5">
+          </div>
+
+          <div>
+            <button type="submit">Submit</button>
+          </div>
+
+
+    </form>
+  </div>

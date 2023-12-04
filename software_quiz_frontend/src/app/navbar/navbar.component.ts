@@ -24,7 +24,9 @@ export class NavbarComponent {
     })
     .subscribe(() => {
       this.authenticated = false;
-      window.location.reload;
+      // window.location.reload;
+      window.location.href = '/home'
+
     })
      
 

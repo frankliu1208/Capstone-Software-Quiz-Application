@@ -19,6 +19,12 @@ import { HomeComponent } from './modules/home/home.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {HttpClientModule} from '@angular/common/http';
 import { NavbarComponent } from './navbar/navbar.component';
+import { AddQuizComponent } from './modules/add-quiz/add-quiz.component';
+import { ViewQuizComponent } from './modules/view-quiz/view-quiz.component';
+import { UserManagmentComponent } from './modules/user-managment/user-managment.component';
+import { AdministerQuizComponent } from './modules/administer-quiz/administer-quiz.component';
+import { ReviewResultsComponent } from './modules/review-results/review-results.component';
+import { CandidateTakeQuizComponent } from './modules/candidate-take-quiz/candidate-take-quiz.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +39,13 @@ import { NavbarComponent } from './navbar/navbar.component';
     QuizComponent,
     QuizManagementComponent,
 
-    NavbarComponent
+    NavbarComponent,
+      AddQuizComponent,
+      ViewQuizComponent,
+      UserManagmentComponent,
+      AdministerQuizComponent,
+      ReviewResultsComponent,
+      CandidateTakeQuizComponent,
 
   ],
   imports: [

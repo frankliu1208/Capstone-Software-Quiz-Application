@@ -1,0 +1,44 @@
+.create-quiz-btn{
+  margin-left: 50%;
+  margin-right: 50%;
+}
+
+.quiz-table {
+    width: 100%;
+    border-collapse: collapse;
+  
+    // Add additional styling for the table if needed
+  }
+  
+  .crud-header,
+  .quiz-name-header,
+  .time-header,
+  .questions-header,
+  .create-date-header {
+    // Add styling for table headers
+    background-color: none;
+
+  }
+  
+  .quiz-row {
+    // Add styling for each row
+    background-color: none;
+
+  }
+  
+  .crud-icon {
+    // Add styling for the crud icon cell
+    background-color: none;
+    
+  }
+  
+  .quiz-name,
+  .time,
+  .questions,
+  .create-date {
+    // Add styling for cells containing data
+    background-color: none;
+
+    
+  }
+  

@@ -20,11 +20,11 @@ router.get('/main', (req, res) => {
     console.log("redirected to the main page")
     // res.render('main');
     res.send({
-        message: "Rerouting to Main Page"
+        message: "Rerouting to your dashboard"
     })
 })
 
-
+//--------------------------------------------
 // User management section home page, the employer can get all users' information from the database, these info will be displayed
 // as users list in user management section home page
 router.get('/user_management_page', async (req, res) =>{
@@ -201,33 +201,78 @@ router.post('/add_new_user',  async (req,res)=> {
 // Update the user info, this functionality relates to User management section
 // dynamic url:  "/:id" aims to tell the below function which user needs to be updated.  Updated contents from the user input at the frontend
 // will be transfered to below function through req.body
+//--------------------------------------------------------------------
+// router.put('/update_user/:id', async (req, res) => {
+
+//     let userPassword = req.body.userPassword
+//     const salt = await bcrypt.genSalt(10);
+//     const hashedPassword = await bcrypt.hash(userPassword, salt);
+
+//     User.findByIdAndUpdate(req.params.id,
+//         {
+//             $set : {
+//                 userName: req.body.userName,
+//                 userEmail: req.body.userEmail,
+//                 userPassword: hashedPassword,
+//             }
+//         }, {new: true}).then(data =>{
+//             if(!data){
+//                 res.status(404).send({
+//                     message: "cannot update the user information"
+//                 })
+//             }else {
+//                 res.status(200).send(data);
+//             }
+//     }).catch(err => {
+//         res.status(500).send({
+//             message: "Error updating the user information"
+//         })
+//     })
+// })
+
 router.put('/update_user/:id', async (req, res) => {
+    try {
+      const updateFields = {};
+  
+      if (req.body.userName) {
+        updateFields.userName = req.body.userName;
+      }
+  
+      if (req.body.userEmail) {
+        updateFields.userEmail = req.body.userEmail;
+      }
+  
+      if (req.body.userPassword) {
+        const salt = await bcrypt.genSalt(10);
+        updateFields.userPassword = await bcrypt.hash(req.body.userPassword, salt);
+      }
 
-    let userPassword = req.body.userPassword
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(userPassword, salt);
-
-    User.findByIdAndUpdate(req.params.id,
-        {
-            $set : {
-                userName: req.body.userName,
-                userEmail: req.body.userEmail,
-                userPassword: hashedPassword,
-            }
-        }, {new: true}).then(data =>{
-            if(!data){
-                res.status(404).send({
-                    message: "cannot update the user information"
-                })
-            }else {
-                res.status(200).send(data);
-            }
-    }).catch(err => {
-        res.status(500).send({
-            message: "Error updating the user information"
-        })
-    })
-})
+      if(req.body.userQuizes){
+        updateFields.userQuizes = req.body.userQuizes;
+      }
+  
+      const updatedUser = await User.findByIdAndUpdate(
+        req.params.id,
+        { $set: updateFields },
+        { new: true }
+      );
+  
+      if (!updatedUser) {
+        return res.status(404).send({
+          message: "Cannot update user information. User not found."
+        });
+      }
+  
+      res.status(200).send(updatedUser);
+    } catch (err) {
+      console.error(err);
+      res.status(500).send({
+        message: "Error updating user information."
+      });
+    }
+  });
+  
+//----------------------------------------------------------------------
 
 
 // Delete the user info according to that user's _id,  this functionality relates to User management section
@@ -313,7 +358,12 @@ router.post('/create_new_quiz',  async (req,res)=> {
 
     quiz.save(quiz)
         .then(data => {
-            res.redirect('/api/quiz_management_page')
+            // res.redirect('/api/quiz_management_')
+            // res.redirect('/api/main')
+            res.status(201).send({
+                _id: data._id,
+                message: "Quiz Created Succesfully"
+            })
         })
         .catch(err =>{
             res.status(500).send({
@@ -325,29 +375,63 @@ router.post('/create_new_quiz',  async (req,res)=> {
 
 // User can click "Edit Quiz" button, a modal will be popped out to let user edit the basic information of quiz, after clicking "submit" button,
 // the updated contents will be saved in "quiz" collection in database,  and user will return back to quiz management home page
+// router.put('/update_quiz/:quizId', async (req, res) => {
+//     // 3rd parameter: {new: true} means that the returned data will get the updated content
+//     Quiz.findByIdAndUpdate(req.params.quizId,
+//         {
+            
+//             $set : {
+//                 quizName: req.body.quizName,
+//                 quizTime: req.body.quizTime,
+//                 quizQuestions: req.body.quizQuestions,
+//             }
+//         }, {new: true}).then(data =>{
+//         if(!data){
+//             res.status(404).send({
+//                 message: "cannot update the quiz information"
+//             })
+//         }else {
+//             res.status(200).send(data); // the updated content will send to the frontend, so that the quiz list in quiz management home page can be updated
+//         }
+//     }).catch(err => {
+//         res.status(500).send({
+//             message: "Error updating the quiz information"
+//         })
+//     })
+// })
+
 router.put('/update_quiz/:quizId', async (req, res) => {
+    // Dynamically construct the update object based on the fields present in the request body
+    const updateObject = {};
+    
+    if (req.body.quizName) {
+        updateObject.quizName = req.body.quizName;
+    }
+
+    if (req.body.quizTime) {
+        updateObject.quizTime = req.body.quizTime;
+    }
+
+    if (req.body.quizQuestions) {
+        updateObject.quizQuestions = req.body.quizQuestions;
+    }
+
     // 3rd parameter: {new: true} means that the returned data will get the updated content
-    Quiz.findByIdAndUpdate(req.params.quizId,
-        {
-            $set : {
-                quizName: req.body.quizName,
-                quizTime: req.body.quizTime,
-                questionNumber: req.body.questionNumber,
-            }
-        }, {new: true}).then(data =>{
-        if(!data){
+    Quiz.findByIdAndUpdate(req.params.quizId, { $set: updateObject }, { new: true }).then(data => {
+        if (!data) {
             res.status(404).send({
-                message: "cannot update the quiz information"
-            })
-        }else {
-            res.status(200).send(data); // the updated content will send to the frontend, so that the quiz list in quiz management home page can be updated
+                message: "Cannot update the quiz information"
+            });
+        } else {
+            res.status(200).send(data); // The updated content will be sent to the frontend
         }
     }).catch(err => {
         res.status(500).send({
             message: "Error updating the quiz information"
-        })
-    })
-})
+        });
+    });
+});
+
 
 
 // Delete the quiz basic info according to that quiz's _id,  this functionality relates to Quiz management section
@@ -389,7 +473,7 @@ router.delete('/delete_quiz/:quizId', async (req, res) => {
         });
 })
 
-
+//---------------------------------------------------------------------------------
 // Quiz management section home page, the user can click "view questions" button of a specific quiz,  then a "view question modal"
 // will be opened, already-added-questions will be displayed here,  there will be add questions, edit question, delete question buttons
 router.get('/open_view_questions_modal/:quizId', async (req, res) =>{
@@ -404,20 +488,70 @@ router.get('/open_view_questions_modal/:quizId', async (req, res) =>{
 })
 
 
+//view individual Question using question id
+router.get('/view_question/:questionId', async(req, res) =>{
+    try {
+        const singleQuestion = await Question.findById(req.params.questionId).lean().exec();
 
+        if (!singleQuestion) {
+            // If the question with the given ID is not found
+            return res.status(404).json({ message: 'Question not found' });
+        }
+
+        res.status(200).json(singleQuestion);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+})
+//---------------------------------------------------------------------------------
+
+//
 // in quiz management home page, the user can click "view question" button of a specific quiz to open "view question modal", In this modal,
 // the questions list will be displayed.  The user can click "add question" button in this modal to open another modal, which let user enter
 // question type, question answers item,  correct answer etc...  then user can click "submit" button,  the below function will be triggered to save
 // contents to database. The user will come back to "view question modal", newly added question will be displayed in the questions list
-router.post('/add_questions/:quizId',  async (req,res)=> {
-    if(!req.body){
-        res.status(400).send({ message : "Add new question functionality: Content in request body is empty!"})
+// router.post('/add_questions/:quizId',  async (req,res)=> {
+//     if(!req.body){
+//         res.status(400).send({ message : "Add new question functionality: Content in request body is empty!"})
+//     }
+//     let quizId = req.params.quizId
+//     let questionContent = req.body.questionContent
+//     let type = req.body.type    // 4 different types: single choice, multiple choice, T/F, free form
+//     let answersItem = req.body.answersItem
+//     let correctAnswer = req.body.correctAnswer
+
+//     const question = new Question({
+//         quizId: quizId,
+//         questionContent: questionContent,
+//         type: type,
+//         answersItem: answersItem,
+//         correctAnswer: correctAnswer,
+//     })
+
+//     question.save(question)
+//         .then(data => {
+//             res.redirect(`/api/open_view_questions_modal/${quizId}`)
+//         })
+//         .catch(err =>{
+//             res.status(500).send({
+//                 message : err.message || "Error happened during adding questions process"
+//             });
+//         });
+// } )
+
+//this way returns the id
+router.post('/add_questions/:quizId', async (req, res) => {
+    if (!req.body) {
+        res.status(400).send({ message: "Add new question functionality: Content in request body is empty!" });
+        return;
     }
-    let quizId = req.params.quizId
-    let questionContent = req.body.questionContent
-    let type = req.body.type    // 4 different types: single choice, multiple choice, T/F, free form
-    let answersItem = req.body.answersItem
-    let correctAnswer = req.body.correctAnswer
+
+    const quizId = req.params.quizId;
+    const questionContent = req.body.questionContent;
+    const type = req.body.type;
+    const answersItem = req.body.answersItem;
+    const correctAnswer = req.body.correctAnswer;
 
     const question = new Question({
         quizId: quizId,
@@ -425,18 +559,21 @@ router.post('/add_questions/:quizId',  async (req,res)=> {
         type: type,
         answersItem: answersItem,
         correctAnswer: correctAnswer,
-    })
+    });
 
-    question.save(question)
-        .then(data => {
-            res.redirect(`/api/open_view_questions_modal/${quizId}`)
-        })
-        .catch(err =>{
-            res.status(500).send({
-                message : err.message || "Error happened during adding questions process"
-            });
+    try {
+        const savedQuestion = await question.save();
+        res.status(201).send({
+            id: savedQuestion._id,
+            message: "Question added successfully",
         });
-} )
+    } catch (err) {
+        res.status(500).send({
+            message: err.message || "Error happened during the question-adding process"
+        });
+    }
+});
+
 
 
 
