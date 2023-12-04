@@ -10,10 +10,44 @@ import axios from 'axios';
 export class ViewQuizComponent implements OnInit {
   quizId: string | null;
   quizQuestions: any[] = []; 
+  questionContent: string;
+  type : string;
+  answerItem : any[] = [];
+  correctAnswer: any[] = [];
+  
+
+
+
   // quizInfo : any[] = [];
 
   constructor(private route: ActivatedRoute) {}
 
+  addQuestionForm: any = {
+    quizId: '',
+    questionContent: '',
+    type: '',
+    answersItem: [],
+    correctAnswer: [],
+    
+ 
+    // Add other form fields for options, correct answer, etc.
+  };
+
+  addQuestion(): void {
+    // Make an API call to add the question using this.addQuestionForm
+    // After a successful response, update the UI with the new question
+
+    //Options for True-False
+    if (this.addQuestionForm.type === 'tf') {
+      this.addQuestionForm.answersItem = [{'label': 'T', 'content':'T'}, {'label': 'F', 'content':'F'}];
+  }
+    console.log(this.quizId);
+    console.log(this.addQuestionForm.questionContent);
+    console.log(this.addQuestionForm.type);
+    console.log(this.addQuestionForm.answersItem);
+    console.log(this.addQuestionForm.correctAnswer);
+    
+  }
   ngOnInit(): void {
     // Subscribe to changes in the route parameters
     this.route.paramMap.subscribe(async params => {

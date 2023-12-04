@@ -1,5 +1,9 @@
 <!-- view-quiz.component.html -->
 
+<div>
+    <button class="create-quiz-btn" [routerLink]="['/quiz-management']" mat-button>Go back</button>
+  </div>
+
 <div class="quiz-details">
     <p>Quiz ID: {{ quizId }}</p>
   </div>
@@ -7,7 +11,12 @@
   <div *ngFor="let question of quizQuestions">
     <div class="question">
       <p>Question: {{ question.questionContent }}</p>
-      <p>Type: {{ question.type }}</p>
+      <p *ngIf="question.type === 'mc'">Type: Multiple Choice</p>
+      <p *ngIf="question.type === 'ff'">Type: Free Form</p>
+      <p *ngIf="question.type === 'cata'">Type: Choose all that apply</p>
+      <p *ngIf="question.type === 'tf'">Type: True/False</p>
+        
+        
 
       <ul>
         <li *ngFor="let option of question.answersItem">({{ option.label }}) {{option.content}}</li>
@@ -20,7 +29,46 @@
     </div>
   </div>
   
+
+ <!-- Add Question Form -->
+ <div class="add-question-form">
+    <h2>Add Question</h2>
+    <form (submit)="addQuestion()">
+
+
+        <label for="questionContent">Question Content:</label>
+        <input type="text" id="questionContent" name="questionContent" [(ngModel)]="addQuestionForm.questionContent" required>
+
+        <label for="type">Type:</label>
+        <select id="type" name="type" [(ngModel)]="addQuestionForm.type" required>
+            <option value="mc">Multiple Choice</option>
+            <option value="ff">Free Form</option>
+            <option value="cata">Choose All That Apply</option>
+            <option value="tf">True/False</option>
+        </select>
+
+        <!-- Additional form fields based on the selected type -->
+        <div *ngIf="addQuestionForm.type === 'tf'">
+            <!-- <label for="options">Answer Choices:</label> -->
+            <input type="hidden" id="answersItem" name="answersItem" [value]="addQuestionForm.answersItem.join(',')">
+
+            <!-- Dropdown for True/False questions -->
+            <label for="correctAnswer">Correct Answer:</label>
+            <select id="correctAnswer" name="correctAnswer" [(ngModel)]="addQuestionForm.correctAnswer" required>
+                <option value="T">True</option>
+                <option value="F">False</option>
+            </select>
+        </div>
+
+        
+
+        <button type="submit">Add Question</button>
+    </form>
+</div>
+
+
+  
+  
   <div>
     <button class="create-quiz-btn" [routerLink]="['/quiz-management']" mat-button>Go back</button>
   </div>
-  

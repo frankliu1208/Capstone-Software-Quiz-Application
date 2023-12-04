@@ -24,7 +24,7 @@ router.get('/main', (req, res) => {
     })
 })
 
-
+//--------------------------------------------
 // User management section home page, the employer can get all users' information from the database, these info will be displayed
 // as users list in user management section home page
 router.get('/user_management_page', async (req, res) =>{
@@ -430,16 +430,16 @@ router.delete('/delete_quiz/:quizId', async (req, res) => {
 //---------------------------------------------------------------------------------
 // Quiz management section home page, the user can click "view questions" button of a specific quiz,  then a "view question modal"
 // will be opened, already-added-questions will be displayed here,  there will be add questions, edit question, delete question buttons
-// router.get('/open_view_questions_modal/:quizId', async (req, res) =>{
-//     console.log("Now you are at view questions modal")
-//     console.log(`this modal belongs to the quiz id ${req.params.quizId}`)
-//     try {
-//         const allQuestions = await Question.find({  quizId: req.params.quizId }).lean().exec()
-//         res.status(200).json(allQuestions)
-//     } catch (error) {
-//         console.log(error)
-//     }
-// })
+router.get('/open_view_questions_modal/:quizId', async (req, res) =>{
+    console.log("Now you are at view questions modal")
+    console.log(`this modal belongs to the quiz id ${req.params.quizId}`)
+    try {
+        const allQuestions = await Question.find({  quizId: req.params.quizId }).lean().exec()
+        res.status(200).json(allQuestions)
+    } catch (error) {
+        console.log(error)
+    }
+})
 
 
 //view individual Question using question id
