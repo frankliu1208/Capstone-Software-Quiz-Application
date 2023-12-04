@@ -70,6 +70,38 @@
 
         </div>
 
+
+        <div *ngIf="addQuestionForm.type === 'mc'">
+
+            <label for="answersItem">Multiple choice Questions:</label>
+            <input id="answersItem" name="answersItem" [(ngModel)]="addQuestionForm.answersItem[0]" placeholder="A" required>
+            <input id="answersItem" name="answersItem" [(ngModel)]="addQuestionForm.answersItem[1]" placeholder="B" required>
+            <input id="answersItem" name="answersItem" [(ngModel)]="addQuestionForm.answersItem[2]" placeholder="C" required>
+            <input id="answersItem" name="answersItem" [(ngModel)]="addQuestionForm.answersItem[3]" placeholder="D" required>
+
+
+
+            <label for="correctAnswer">Multiple choice answer:</label>
+            <input id="correctAnswer" name="correctAnswer" [(ngModel)]="addQuestionForm.correctAnswer" required>
+                
+        </div>
+
+        <div *ngIf="addQuestionForm.type === 'cata'">
+
+            <label for="answersItem">Multiple choice Questions:</label>
+            <input id="answersItem" name="answersItem" [(ngModel)]="addQuestionForm.answersItem[0]" placeholder="A" required>
+            <input id="answersItem" name="answersItem" [(ngModel)]="addQuestionForm.answersItem[1]" placeholder="B" required>
+            <input id="answersItem" name="answersItem" [(ngModel)]="addQuestionForm.answersItem[2]" placeholder="C" required>
+            <input id="answersItem" name="answersItem" [(ngModel)]="addQuestionForm.answersItem[3]" placeholder="D" required>
+
+
+            <br>
+            <label for="correctAnswer">Check all that applyr:</label>
+            <input id="correctAnswer" name="correctAnswer" [(ngModel)]="addQuestionForm.correctAnswer[0]" required>
+            <input id="correctAnswer" name="correctAnswer" [(ngModel)]="addQuestionForm.correctAnswer[1]" required>
+                
+        </div>
+
         
 
         <button type="submit">Add Question</button>

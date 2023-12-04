@@ -71,7 +71,55 @@ export class ViewQuizComponent implements OnInit {
     if (this.addQuestionForm.type === 'tf') {
       this.addQuestionForm.answersItem = [{'label': 'T', 'content':'T'}, {'label': 'F', 'content':'F'}];
   }
-  
+
+    if(this.addQuestionForm.type === 'mc'){
+
+      this.addQuestionForm.answersItem =
+      [
+        {
+          'label' : 'A',
+          'content': `${this.addQuestionForm.answersItem[0]}`
+        },
+        {
+          'label' : 'B',
+          'content': `${this.addQuestionForm.answersItem[1]}`
+        },
+        {
+          'label' : 'C',
+          'content': `${this.addQuestionForm.answersItem[2]}`
+        },
+        {
+          'label' : 'D',
+          'content': `${this.addQuestionForm.answersItem[3]}`
+        },
+
+      ]
+    }
+
+
+    if(this.addQuestionForm.type === 'cata'){
+
+      this.addQuestionForm.answersItem =
+      [
+        {
+          'label' : 'A',
+          'content': `${this.addQuestionForm.answersItem[0]}`
+        },
+        {
+          'label' : 'B',
+          'content': `${this.addQuestionForm.answersItem[1]}`
+        },
+        {
+          'label' : 'C',
+          'content': `${this.addQuestionForm.answersItem[2]}`
+        },
+        {
+          'label' : 'D',
+          'content': `${this.addQuestionForm.answersItem[3]}`
+        },
+
+      ]
+    }
 
   let newQuestionId = '';
 
@@ -107,7 +155,16 @@ export class ViewQuizComponent implements OnInit {
      await axios.put(`http://localhost:5000/api/update_quiz/${this.quizId}`, {
        quizQuestions: [newQuestionId, ...questionIdsArray],
      });
-
+     // Reset addQuestionsForm to its default values
+     this.addQuestionForm = {
+      quizId: '',
+      questionContent: '',
+      type: '',
+      answersItem: [],
+      correctAnswer: [],
+      // Add other form fields for options, correct answer, etc.
+  };
+  
      window.location.reload();
    })
    .catch(error => {
