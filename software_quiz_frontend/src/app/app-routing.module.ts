@@ -8,6 +8,7 @@ import { AdminLandingComponent } from './modules/admin-landing/admin-landing.com
 import { QuizManagementComponent } from './modules/quiz-management/quiz-management.component';
 import { AddQuizComponent } from './modules/add-quiz/add-quiz.component';
 import { ViewQuizComponent } from './modules/view-quiz/view-quiz.component';
+import { UserManagmentComponent } from './modules/user-managment/user-managment.component';
 
 const routes: Routes = [
 
@@ -42,6 +43,11 @@ const routes: Routes = [
   {
     path: 'view-quiz/:id',
     component: ViewQuizComponent
+  },
+
+  {
+    path: 'user-management',
+    component: UserManagmentComponent
   }
 
 ];

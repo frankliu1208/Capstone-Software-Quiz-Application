@@ -21,6 +21,7 @@ import {HttpClientModule} from '@angular/common/http';
 import { NavbarComponent } from './navbar/navbar.component';
 import { AddQuizComponent } from './modules/add-quiz/add-quiz.component';
 import { ViewQuizComponent } from './modules/view-quiz/view-quiz.component';
+import { UserManagmentComponent } from './modules/user-managment/user-managment.component';
 
 @NgModule({
   declarations: [
@@ -38,6 +39,7 @@ import { ViewQuizComponent } from './modules/view-quiz/view-quiz.component';
     NavbarComponent,
       AddQuizComponent,
       ViewQuizComponent,
+      UserManagmentComponent,
 
   ],
   imports: [

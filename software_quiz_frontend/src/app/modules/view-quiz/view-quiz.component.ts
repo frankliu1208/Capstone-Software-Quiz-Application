@@ -14,6 +14,9 @@ export class ViewQuizComponent implements OnInit {
   type : string;
   answerItem : any[] = [];
   correctAnswer: any[] = [];
+  quizName :string ;
+  quizTime: number;
+
   
 
 
@@ -33,7 +36,14 @@ export class ViewQuizComponent implements OnInit {
     // Add other form fields for options, correct answer, etc.
   };
 
-
+  updateQuiz(): void {
+    // Call your API or perform necessary logic for updating quiz
+    axios.put(`http://localhost:5000/api/update_quiz/${this.quizId}`, {
+     quizName : this.quizName,
+     quizTime : this.quizTime
+   });
+    // console.log('Updating quiz:');
+  }
   deleteQuestion(questionId:string): void{
     
 
@@ -41,6 +51,7 @@ export class ViewQuizComponent implements OnInit {
  axios.get(`http://localhost:5000/api/view_quiz_details/${this.quizId}`)
  .then(async (response) => {
    const questionIdsArray = response.data[0].quizQuestions;
+
   
   //  console.log("old array", questionIdsArray)
    const newQuestionsIdsArray = questionIdsArray.filter((id: string)=> id !== questionId)
@@ -123,20 +134,6 @@ export class ViewQuizComponent implements OnInit {
 
   let newQuestionId = '';
 
-  //Create Question
-  // const data = axios.post(`http://localhost:5000/api/add_questions/${this.quizId}`, this.addQuestionForm)
-  // .then(response => {
-  //   // console.log('Question added successfully:', response.data);
-
-  //   newQuestionId = response.data.id
-
-  //   // console.log(newQuestionId)
-    
-  // })
-  // .catch(error => {
-  //   console.error('Error adding question:', error.response.data.message);
-  // });
-
    // Create Question
    axios.post(`http://localhost:5000/api/add_questions/${this.quizId}`, this.addQuestionForm)
    .then(response => {
@@ -164,7 +161,7 @@ export class ViewQuizComponent implements OnInit {
       correctAnswer: [],
       // Add other form fields for options, correct answer, etc.
   };
-  
+
      window.location.reload();
    })
    .catch(error => {
@@ -193,6 +190,12 @@ export class ViewQuizComponent implements OnInit {
         // Make an API call or perform any asynchronous operation to get quiz info
         const response = await axios.get(`http://localhost:5000/api/view_quiz_details/${quizId}`);
         const questionIdsArray = response.data[0].quizQuestions
+
+        //store quiz info for showing/updating it from the view/modify screen
+        this.quizName = response.data[0].quizName
+        this.quizTime = response.data[0].quizTime
+
+
         // console.log('array of questions is',questionIdsArray);
         const questionDetailsPromises = questionIdsArray.map(async (questionId: string) =>{
           const response = await axios.get(`http://localhost:5000/api/view_question/${questionId}`)

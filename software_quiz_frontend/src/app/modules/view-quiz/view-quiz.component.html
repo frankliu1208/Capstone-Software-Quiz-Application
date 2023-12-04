@@ -4,9 +4,20 @@
     <button class="create-quiz-btn" [routerLink]="['/quiz-management']" mat-button>Go back</button>
   </div>
 
-<div class="quiz-details">
-    <p>Quiz ID: {{ quizId }}</p>
-  </div>
+  <div class="quiz-details">
+    <form (submit)="updateQuiz()">
+        <p>Quiz ID: {{ quizId }}</p>
+        <label for="quizName">Quiz Name:</label>
+        <input type="text" id="quizName" name="quizName" [(ngModel)]="quizName" required>
+        <br>
+
+        <label for="quizTime">Quiz Time:</label>
+        <input type="text" id="quizTime" name="quizTime" [(ngModel)]="quizTime" required>
+        <br>
+        <button type="submit">Update Quiz info</button>
+    </form>
+</div>
+  
   
   <div *ngFor="let question of quizQuestions">
     <div class="question">
