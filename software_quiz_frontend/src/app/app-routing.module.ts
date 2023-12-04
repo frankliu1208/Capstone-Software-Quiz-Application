@@ -9,6 +9,8 @@ import { QuizManagementComponent } from './modules/quiz-management/quiz-manageme
 import { AddQuizComponent } from './modules/add-quiz/add-quiz.component';
 import { ViewQuizComponent } from './modules/view-quiz/view-quiz.component';
 import { UserManagmentComponent } from './modules/user-managment/user-managment.component';
+import { AdministerQuizComponent } from './modules/administer-quiz/administer-quiz.component';
+import { ReviewResultsComponent } from './modules/review-results/review-results.component';
 
 const routes: Routes = [
 
@@ -48,6 +50,15 @@ const routes: Routes = [
   {
     path: 'user-management',
     component: UserManagmentComponent
+  },
+
+  {
+    path: 'administer-quiz',
+    component: AdministerQuizComponent
+  },
+  {
+    path: 'review-results',
+    component: ReviewResultsComponent
   }
 
 ];

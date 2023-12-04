@@ -22,6 +22,8 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { AddQuizComponent } from './modules/add-quiz/add-quiz.component';
 import { ViewQuizComponent } from './modules/view-quiz/view-quiz.component';
 import { UserManagmentComponent } from './modules/user-managment/user-managment.component';
+import { AdministerQuizComponent } from './modules/administer-quiz/administer-quiz.component';
+import { ReviewResultsComponent } from './modules/review-results/review-results.component';
 
 @NgModule({
   declarations: [
@@ -40,6 +42,8 @@ import { UserManagmentComponent } from './modules/user-managment/user-managment.
       AddQuizComponent,
       ViewQuizComponent,
       UserManagmentComponent,
+      AdministerQuizComponent,
+      ReviewResultsComponent,
 
   ],
   imports: [

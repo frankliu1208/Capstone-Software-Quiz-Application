@@ -71,7 +71,6 @@ export class RegisterComponent {
               })
 
               .then( ()=>
-              // window.location.href = '/'
               window.location.href = '/home'
 
             )
@@ -79,8 +78,14 @@ export class RegisterComponent {
         })
         
         .catch( (error) => {
-          // console.error('Request failed:', error.response.data.message);
-      Swal.fire("error", error.response.data.message)
+      // console.error('Request failed:', error.response.data.message);
+      // Swal.fire("error", error.response.data.message)
+      
+              Swal.fire({
+                icon: 'error',
+                title: 'error',
+                text: `${error.response.data.message}`,
+              })
 
         });
       
