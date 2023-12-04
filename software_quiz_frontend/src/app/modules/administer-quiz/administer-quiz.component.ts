@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import axios from 'axios';
+import Swal from 'sweetalert2';
+
 
 interface Quiz {
   _id: string;
@@ -21,10 +23,11 @@ export class AdministerQuizComponent {
 
   formData = {
     email: '',
-    confirmEmail: '',
+    quizName : '',
     selectedQuiz: ''
   };
 
+  
   async ngOnInit(): Promise<void> {
     await this.getCurrentUsersQuizes();
     console.log(this.currentUserQuizes);
@@ -32,7 +35,28 @@ export class AdministerQuizComponent {
 
   sendQuizToUser(): void {
     // Add your logic here to handle form submission
-    
+     // Add your logic here to handle form submission
+  // axios.post('http://localhost:5000/api/send_mail_to_candidate', {
+  //   'candidateEmailAddress': this.formData.email,
+  //   'quizId' : this.formData.selectedQuiz,
+  //   'quizName' : ''
+  // })
+  // .then(() => {
+  //   Swal.fire({
+  //     icon: 'success',
+  //     title: 'Success',
+  //     text: `Quiz Successfully sent to ${this.formData.email}`,
+  //   }).then(() => {
+  //     window.location.href = '/administer-quiz';
+  //   });
+  // })
+  // .catch((error) => {
+  //   // Handle errors, show an error message, etc.
+  //   console.error('Error sending mail:', error);
+  // });
+  console.log(this.formData.quizName)
+  console.log(this.formData.selectedQuiz);
+  console.log(this.formData.email);
   }
 
   async getCurrentUsersQuizes() {

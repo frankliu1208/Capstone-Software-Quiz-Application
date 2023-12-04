@@ -11,6 +11,7 @@ import { ViewQuizComponent } from './modules/view-quiz/view-quiz.component';
 import { UserManagmentComponent } from './modules/user-managment/user-managment.component';
 import { AdministerQuizComponent } from './modules/administer-quiz/administer-quiz.component';
 import { ReviewResultsComponent } from './modules/review-results/review-results.component';
+import { CandidateTakeQuizComponent } from './modules/candidate-take-quiz/candidate-take-quiz.component';
 
 const routes: Routes = [
 
@@ -59,6 +60,13 @@ const routes: Routes = [
   {
     path: 'review-results',
     component: ReviewResultsComponent
+  },
+
+  {
+    // path: 'candidate-take-quiz/:id',
+    path: 'candidate-take-quiz',
+
+    component: CandidateTakeQuizComponent
   }
 
 ];
