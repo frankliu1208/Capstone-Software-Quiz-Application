@@ -1,5 +1,48 @@
-<h1>Quiz Started</h1>
+<!-- candidate-quiz-started.component.html -->
 
-<p>Quiz Id: {{ quizId }}</p>
-<!-- <p>Your Email: {{ candidateEmail }}</p> -->
+<h1 class="quiz-title">Quiz Started</h1>
 
+<p class="quiz-info">Quiz Id: {{ quizId }}</p>
+<p class="quiz-info">Your Email: {{ candidateEmail }}</p>
+
+<form (ngSubmit)="submitAnswers()" class="quiz-form">
+  <div *ngFor="let question of quizData; let i = index" class="question-container">
+    <p class="question-content">{{ question.questionContent }}</p>
+
+    <!-- Use ngIf to check the question type and display appropriate input fields -->
+    <div *ngIf="question.type === 'tf'" class="question-type">
+      <!-- True/False question type -->
+      <label class="radio-label">
+        <input type="radio" name="answer{{ i }}" value="T" class="radio-input"> True
+      </label>
+      <label class="radio-label">
+        <input type="radio" name="answer{{ i }}" value="F" class="radio-input"> False
+      </label>
+    </div>
+
+    <div *ngIf="question.type === 'ff'" class="question-type">
+      <!-- Fill in the blank question type -->
+      <input type="text" name="answer{{ i }}" placeholder="Your Answer" class="text-input">
+    </div>
+
+    <div *ngIf="question.type === 'mc'" class="question-type">
+      <!-- Multiple Choice question type -->
+      <label *ngFor="let option of question.answersItem" class="radio-label">
+        <input type="radio" name="answer{{ i }}" [value]="option.label" class="radio-input"> {{ option.content }}
+      </label>
+      <br>
+    </div>
+
+    <div *ngIf="question.type === 'cata'" class="question-type">
+      <!-- Check All That Apply question type -->
+      <label *ngFor="let option of question.answersItem" class="checkbox-label">
+        <input type="checkbox" name="answer{{ i }}" [value]="option.label" class="checkbox-input"> {{ option.content }}
+      </label>
+    </div>
+
+    <!-- Add more cases based on question types -->
+
+  </div>
+
+  <button type="submit" class="submit-button">Submit Answers</button>
+</form>
