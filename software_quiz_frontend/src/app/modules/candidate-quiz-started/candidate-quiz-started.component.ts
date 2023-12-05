@@ -10,7 +10,9 @@ import axios from 'axios';
 export class CandidateQuizStartedComponent {
 
   quizId: string;
-  candidateEmail: string; 
+  candidateEmail: string;
+
+  
   constructor(private route: ActivatedRoute) {}
 
   async ngOnInit(): Promise<void> {
