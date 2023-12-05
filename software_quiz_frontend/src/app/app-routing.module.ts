@@ -63,8 +63,7 @@ const routes: Routes = [
   },
 
   {
-    // path: 'candidate-take-quiz/:id',
-    path: 'candidate-take-quiz',
+    path: 'candidate-take-quiz/:id',
 
     component: CandidateTakeQuizComponent
   }

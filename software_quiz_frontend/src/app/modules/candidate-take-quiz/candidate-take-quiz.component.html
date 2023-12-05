@@ -1,1 +1,7 @@
-<p>candidate-take-quiz works!</p>
+<h1>You are about to take the following quiz</h1>
+<p>Quiz Id: {{ quizId }}</p>
+<p>Quiz Name: {{ quizDetails?.quizName }}</p>
+<p>Quiz Time: {{ quizDetails?.quizTime }} minutes</p>
+<p>Number of questions: {{ quizDetails?.quizQuestions?.length }}</p>
+
+<button (click)="takeQuiz(quizId)">Start Quiz</button>
