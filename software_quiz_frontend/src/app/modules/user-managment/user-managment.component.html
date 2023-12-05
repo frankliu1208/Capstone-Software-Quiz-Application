@@ -1,17 +1,22 @@
 <div class="quiz-details">
     <form (submit)="updateUser()">
-        <p>User Id: {{ userId }}</p>
-        <label for="userName">User Name:</label>
-        <input type="text" id="userName" name="userName" [(ngModel)]="userName" required>
-        <br>
-
-        <label for="userEmail">User Email:</label>
-        <input type="text" id="userEmail" name="userEmail" [(ngModel)]="userEmail" required>
-        <br>
-
-        <label for="userPassword">User Password:</label>
-        <input type="text" id="userPassword" name="userPassword" [(ngModel)]="userPassword" required>
-        <br>
-        <button type="submit">Update user info</button>
+        <table>
+            <tr>
+                <td>User ID: {{ userId }}</td>
+            </tr>
+            <tr>
+                <td><label class="user-label" for="userName">User Name:</label></td>
+                <td><input class="user-field" type="text" id="userName" name="userName" [(ngModel)]="userName" required></td>
+        </tr>  
+        <tr>
+            <td><label class="user-label" for="userEmail">User Email:</label></td>
+            <td><input class="user-field" type="text" id="userEmail" name="userEmail" [(ngModel)]="userEmail" required></td>
+        </tr>
+        <tr>
+            <td><label class="user-label" for="userPassword">User Password:</label></td>
+            <td><input class="user-field" type="text" id="userPassword" name="userPassword" [(ngModel)]="userPassword" required></td>
+        </tr>
+        <tr><td class="button"><button type="submit">Update user info</button></td></tr>
+    </table>
     </form>
 </div>
