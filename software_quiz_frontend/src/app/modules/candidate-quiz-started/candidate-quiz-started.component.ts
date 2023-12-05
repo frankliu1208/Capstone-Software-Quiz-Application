@@ -17,8 +17,19 @@ export class CandidateQuizStartedComponent {
     this.route.params.subscribe(async params => {
       this.quizId = params['id']; // 'id' should match the parameter name in your route
       this.candidateEmail = params['email']
-      console.log('Quiz', this.quizId);
-      console.log('email', this.candidateEmail)
+
+
+      // Start Quiz data for after rerouted from start
+      axios.get(`http://localhost:5000/api/quiz_started_for_candidate/${this.candidateEmail}/${this.quizId}`)
+        .then(response => {
+          // Handle the response if needed
+          console.log(response.data);
+        })
+        .catch(error => {
+          // Handle errors
+          console.error('Error starting quiz:', error);
+        });
+      
     
     });
   }
@@ -26,21 +37,8 @@ export class CandidateQuizStartedComponent {
 // take quiz gets the quiz
   // async takeQuiz(quizId: string) {
   //   try {
-  //     // Get candidate's email
-  //     const checkEmail = await axios.get(`http://localhost:5000/api/current_candidate_email`);
-  //     console.log(checkEmail.data);
-  //     const candidateEmail = checkEmail.data;
   
-  //     // Start Quiz data for after rerouted from start
-  //     axios.get(`http://localhost:5000/api/quiz_started_for_candidate/${candidateEmail}/${quizId}`)
-  //       .then(response => {
-  //         // Handle the response if needed
-  //         console.log(response.data);
-  //       })
-  //       .catch(error => {
-  //         // Handle errors
-  //         console.error('Error starting quiz:', error);
-  //       });
+      
   //   } catch (error) {
   //     throw error;
   //   }
