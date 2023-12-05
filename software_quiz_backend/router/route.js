@@ -10,8 +10,9 @@ import data from "../database/data.js";
 import {sendEmailToCandidate, sendEmailToEmployer} from "../utils/email.js";
 import {automaticEvaluateScore} from "../utils/automaticEvaluateScore.js";
 
-const router = Router();
 
+const router = Router();
+import sharedModule from "./sharedModule.js";
 
 
 // After successfully logged-in,  user will come to the application Main page.
@@ -697,11 +698,24 @@ router.post('/send_mail_to_candidate', async (req, res) => {
     let quizId = req.body.quizId
     let quizName = req.body.quizName
 
+    //store current email in shared module
+    sharedModule.setCurrentCandidateEmail(candidateEmailAddress);
     // below function is to implement sending email to candidate using nodemailer library
     await sendEmailToCandidate(candidateEmailAddress, quizId, quizName)
     res.status(200).send({ message : "Send email to candidate successfully"})
 })
 
+// Route to get the current candidate's email
+router.get('/current_candidate_email', (req, res) => {
+    // Assuming your user object has an email property
+    const email = sharedModule.getCurrentCandidateEmail()
+    //added to clear email
+    // sharedModule.setCurrentCandidateEmail(''); 
+
+
+  
+    res.status(200).json({ email });
+  });
 // the candidate opens the email which is sent by employer, and clicks the link. then below function is triggered: the quiz name will be displayed, some sentences to tell the candidate that he/she is about to take the quiz of "quizName"
 // a "Start the Quiz" button will be put in this page
 // a new frontend page needs to be designed for the candidates to take the quiz.

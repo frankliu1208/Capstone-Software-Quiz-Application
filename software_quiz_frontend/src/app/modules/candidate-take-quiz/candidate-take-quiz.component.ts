@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import axios
+import { ActivatedRoute, Router } from '@angular/router';
+import axios from 'axios';
 
-from 'axios';
 @Component({
 
   
@@ -16,7 +15,7 @@ export class CandidateTakeQuizComponent {
   quizDetails: any; 
 
 
-  constructor(private route: ActivatedRoute) {}
+  constructor(private route: ActivatedRoute, private router: Router) {}
 
   async ngOnInit(): Promise<void> {
     this.route.params.subscribe(async params => {
@@ -40,8 +39,22 @@ export class CandidateTakeQuizComponent {
     }
   }
 
-  takeQuiz(quizId: string){
+  async takeQuiz(quizId: string) {
+    try {
+      // Get candidate's email
+      const checkEmail = await axios.get(`http://localhost:5000/api/current_candidate_email`);
+      // console.log(checkEmail.data);
+      const email = checkEmail.data.email;
 
+      // console.log('email is:', email);
+      // console.log(quizId);
+
+      window.location.href = `/candidate-quiz-started/${email}/${quizId};`
+      // this.router.navigate(['/candidate-quiz-started', email, quizId]);
+    } catch (error) {
+      throw error;
+    }
   }
+  
   
 }

@@ -25,6 +25,7 @@ import { UserManagmentComponent } from './modules/user-managment/user-managment.
 import { AdministerQuizComponent } from './modules/administer-quiz/administer-quiz.component';
 import { ReviewResultsComponent } from './modules/review-results/review-results.component';
 import { CandidateTakeQuizComponent } from './modules/candidate-take-quiz/candidate-take-quiz.component';
+import { CandidateQuizStartedComponent } from './modules/candidate-quiz-started/candidate-quiz-started.component';
 
 @NgModule({
   declarations: [
@@ -46,6 +47,7 @@ import { CandidateTakeQuizComponent } from './modules/candidate-take-quiz/candid
       AdministerQuizComponent,
       ReviewResultsComponent,
       CandidateTakeQuizComponent,
+      CandidateQuizStartedComponent,
 
   ],
   imports: [
