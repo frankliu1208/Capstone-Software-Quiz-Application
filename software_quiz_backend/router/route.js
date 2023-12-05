@@ -713,9 +713,12 @@ router.get('/candidate_take_quiz/:quizId', async (req, res) => {
     console.log(`the quiz id getting from the sendEmailToCandiate function is :  ${req.params.quizId}`)
     try {
         const basicQuizInfo = await Quiz.find({_id: req.params.quizId}).lean().exec()
-        console.log(basicQuizInfo)
+        // console.log(basicQuizInfo)
         // send back to frontend.  these information can be displayed at "candidate quiz starting page"
-        res.status(200).json(basicQuizInfo)
+        // res.status(200).json(basicQuizInfo)
+
+        //redirect instead to front end site to display the quiz
+        res.redirect(`http://localhost:4200/candidate-take-quiz/${req.params.quizId}`);
     } catch (error) {
         console.log(error)
     }
