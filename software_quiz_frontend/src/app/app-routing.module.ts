@@ -12,6 +12,7 @@ import { UserManagmentComponent } from './modules/user-managment/user-managment.
 import { AdministerQuizComponent } from './modules/administer-quiz/administer-quiz.component';
 import { ReviewResultsComponent } from './modules/review-results/review-results.component';
 import { CandidateTakeQuizComponent } from './modules/candidate-take-quiz/candidate-take-quiz.component';
+import { CandidateQuizStartedComponent } from './modules/candidate-quiz-started/candidate-quiz-started.component';
 
 const routes: Routes = [
 
@@ -63,10 +64,14 @@ const routes: Routes = [
   },
 
   {
-    // path: 'candidate-take-quiz/:id',
-    path: 'candidate-take-quiz',
+    path: 'candidate-take-quiz/:id',
 
     component: CandidateTakeQuizComponent
+  },
+  {
+    path: 'candidate-quiz-started/:email/:id',
+
+    component: CandidateQuizStartedComponent
   }
 
 ];

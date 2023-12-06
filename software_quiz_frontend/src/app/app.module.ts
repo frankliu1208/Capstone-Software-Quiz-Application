@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
+import { QuizDataService } from './modules/candidate-quiz-started/quiz-data.service';
+
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -25,6 +27,7 @@ import { UserManagmentComponent } from './modules/user-managment/user-managment.
 import { AdministerQuizComponent } from './modules/administer-quiz/administer-quiz.component';
 import { ReviewResultsComponent } from './modules/review-results/review-results.component';
 import { CandidateTakeQuizComponent } from './modules/candidate-take-quiz/candidate-take-quiz.component';
+import { CandidateQuizStartedComponent } from './modules/candidate-quiz-started/candidate-quiz-started.component';
 
 @NgModule({
   declarations: [
@@ -46,6 +49,7 @@ import { CandidateTakeQuizComponent } from './modules/candidate-take-quiz/candid
       AdministerQuizComponent,
       ReviewResultsComponent,
       CandidateTakeQuizComponent,
+      CandidateQuizStartedComponent,
 
   ],
   imports: [
@@ -61,7 +65,7 @@ import { CandidateTakeQuizComponent } from './modules/candidate-take-quiz/candid
     ReactiveFormsModule
     
   ],
-  providers: [],
+  providers: [QuizDataService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -10,9 +10,10 @@
         
       <!-- Select Quiz Dropdown -->
       <label for="selectedQuiz">Select Quiz:</label>
-      <select id="selectedQuiz" name="selectedQuiz" [(ngModel)]="formData.selectedQuiz" required>
-        <option *ngFor="let quiz of currentUserQuizes" [value]="quiz._id">{{ quiz.quizName }}</option>
-      </select>
+<select id="selectedQuiz" name="selectedQuiz" [(ngModel)]="formData.selectedQuiz" required>
+  <option *ngFor="let quiz of currentUserQuizes" [ngValue]="quiz">{{ quiz.quizName }}</option>
+</select>
+
       <br>
 
   

@@ -95,6 +95,14 @@ export class ViewQuizComponent implements OnInit {
 
     if(this.addQuestionForm.type === 'mc'){
 
+      // this.addQuestionForm = {
+      //   quizId: '',
+      //   questionContent: '',
+      //   type: '',
+      //   answersItem: [],
+      //   correctAnswer: []
+      // }
+
       this.addQuestionForm.answersItem =
       [
         {
@@ -119,6 +127,14 @@ export class ViewQuizComponent implements OnInit {
 
 
     if(this.addQuestionForm.type === 'cata'){
+
+      // this.addQuestionForm = {
+      //   quizId: '',
+      //   questionContent: '',
+      //   type: '',
+      //   answersItem: [],
+      //   correctAnswer: []
+      // }
 
       this.addQuestionForm.answersItem =
       [

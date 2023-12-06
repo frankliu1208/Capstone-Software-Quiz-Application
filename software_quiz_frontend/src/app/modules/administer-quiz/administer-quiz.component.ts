@@ -23,40 +23,52 @@ export class AdministerQuizComponent {
 
   formData = {
     email: '',
-    quizName : '',
-    selectedQuiz: ''
+    selectedQuiz: {_id: '', quizName: ''}
   };
 
   
   async ngOnInit(): Promise<void> {
     await this.getCurrentUsersQuizes();
-    console.log(this.currentUserQuizes);
+    // console.log(this.currentUserQuizes);
   }
 
   sendQuizToUser(): void {
-    // Add your logic here to handle form submission
-     // Add your logic here to handle form submission
-  // axios.post('http://localhost:5000/api/send_mail_to_candidate', {
-  //   'candidateEmailAddress': this.formData.email,
-  //   'quizId' : this.formData.selectedQuiz,
-  //   'quizName' : ''
-  // })
-  // .then(() => {
-  //   Swal.fire({
-  //     icon: 'success',
-  //     title: 'Success',
-  //     text: `Quiz Successfully sent to ${this.formData.email}`,
-  //   }).then(() => {
-  //     window.location.href = '/administer-quiz';
-  //   });
-  // })
-  // .catch((error) => {
-  //   // Handle errors, show an error message, etc.
-  //   console.error('Error sending mail:', error);
-  // });
-  console.log(this.formData.quizName)
-  console.log(this.formData.selectedQuiz);
-  console.log(this.formData.email);
+  
+  //confirm email is valid
+  if (!this.validateEmail(this.formData.email)){
+    // Swal.fire("Invalid Email","Please enter a valid email address(eg: myemail@domain,      example@gmail.com")
+    Swal.fire({
+      icon: 'error',
+      title: 'Invalid Email',
+      text: `Please enter a valid email address(eg: myemail@domain,      example@gmail.com)`,
+    })
+  }
+
+  else{
+      // Logic here to handle form submission
+  axios.post('http://localhost:5000/api/send_mail_to_candidate', {
+    'candidateEmailAddress': this.formData.email,
+    'quizId' : this.formData.selectedQuiz._id,
+    'quizName' : this.formData.selectedQuiz.quizName
+  })
+  .then(() => {
+    Swal.fire({
+      icon: 'success',
+      title: 'Success',
+      text: `Quiz Successfully sent to ${this.formData.email}`,
+    }).then(() => {
+      window.location.href = '/administer-quiz';
+    });
+  })
+  .catch((error) => {
+    // Handle errors, show an error message, etc.
+    console.error('Error sending mail:', error);
+  });
+
+  }
+
+  
+
   }
 
   async getCurrentUsersQuizes() {
@@ -72,5 +84,13 @@ export class AdministerQuizComponent {
     } catch (error) {
       console.error('Error getting quiz data:', error);
     }
+  }
+
+
+  validateEmail(email:string){
+    //regex expression for email check 
+    var validRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+    return validRegex.test(email);
   }
 }
