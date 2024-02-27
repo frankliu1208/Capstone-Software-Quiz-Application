@@ -17,7 +17,7 @@ export async function sendEmailToCandidate(candidateEmail, quizId, quizName) {
             pass: 'CS467quizappOSU',
             clientId: '464562373315-aams5un736pm3pamqktup9aojqshmtv0.apps.googleusercontent.com',
             clientSecret: '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',
-            refreshToken: '1//0490p_OkRynWGCgYIARAAGAQSNwF-L9IrTIfdqU-gewPLTS3V0NLFg17-WHM6tLNS29NsISTBPpOMf55vwUSdDP_8Y3dYSkH0I1Q'
+            refreshToken: '1//04orwxxcCGcSyCgYIARAAGAQSNwF-L9IrmndmDjdB8ic0G79IXNn_LKUGce5ppAeTkBQWxExK1Z17l_326qkgymvRdg2kQaubpI4'
         }
     });
 
@@ -49,7 +49,7 @@ export async function sendEmailToEmployer(candidateEmail) {
             pass: 'CS467quizappOSU',
             clientId: '464562373315-aams5un736pm3pamqktup9aojqshmtv0.apps.googleusercontent.com',
             clientSecret: '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',
-            refreshToken: '1//0490p_OkRynWGCgYIARAAGAQSNwF-L9IrTIfdqU-gewPLTS3V0NLFg17-WHM6tLNS29NsISTBPpOMf55vwUSdDP_8Y3dYSkH0I1Q'
+            refreshToken: '1//04orwxxcCGcSyCgYIARAAGAQSNwF-L9IrmndmDjdB8ic0G79IXNn_LKUGce5ppAeTkBQWxExK1Z17l_326qkgymvRdg2kQaubpI4'
         }
     });
 
