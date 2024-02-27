@@ -9,7 +9,10 @@ import cookieParser from 'cookie-parser';
 const app = express();
 app.use(cookieParser());
 
-//origin will be access the application can be the applications url
+//app represents an instance of Express.js application
+//  this code configures the Express application to enable CORS with the specified options. It allows requests from http://localhost:4200
+//  and includes credentials in the response. This is useful when you have a frontend application
+//  running on http://localhost:4200 that needs to make requests to your Express backend.
 app.use(cors({
     credentials:true,
     origin:['http://localhost:4200']
