@@ -1,5 +1,6 @@
 
 import mongoose from "mongoose";
+// Extracting the Schema object from Mongoose
 const { Schema } = mongoose;
 
 // commented out some orinal types to get basic register/login working
