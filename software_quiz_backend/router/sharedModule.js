@@ -1,5 +1,6 @@
 let currentCandidateEmail = '';
 
+// Arrow functions are a concise way to write anonymous functions
 const setCurrentCandidateEmail = (email) => {
   currentCandidateEmail = email;
 };
@@ -12,3 +13,8 @@ export default {
   setCurrentCandidateEmail,
   getCurrentCandidateEmail,
 };
+
+
+
+
+

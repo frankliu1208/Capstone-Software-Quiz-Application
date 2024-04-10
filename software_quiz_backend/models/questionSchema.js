@@ -11,6 +11,8 @@ const questionModel = new Schema({
     correctAnswer: { type: Array, default: [] },
 });
 
+// a pre-save hook in a Mongoose model in a Node.js application. It is executed before saving a document of the specified model type (questionModel).
+// This hook is designed to validate certain properties of the document before it is saved to the database.
 questionModel.pre('save', function(next) {
     // Validate correctAnswer based on the question type
     switch (this.type.toLowerCase()) {
