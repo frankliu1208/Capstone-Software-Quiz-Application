@@ -887,5 +887,5 @@ router.post('/candidat_submit_quiz', async (req, res) =>{
     }
 })
 
-
+//  There can only be one default export per module.
 export default router;

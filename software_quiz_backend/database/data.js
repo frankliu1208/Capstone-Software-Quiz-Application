@@ -53,3 +53,5 @@ export default [
 ];
 
 export const answers = [0, 1, 2, 1, 0];
+
+// default export value is an array [],  inside the array, there are 5 objects, Each object represents a single quiz question.
